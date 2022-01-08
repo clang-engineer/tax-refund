@@ -126,6 +126,7 @@ public class Scrap extends AbstractAuditingEntity implements Serializable {
 
     public Scrap svcCd(String svcCd) {
         this.svcCd = svcCd;
+        return this;
     }
 
     public String getUserId() {
