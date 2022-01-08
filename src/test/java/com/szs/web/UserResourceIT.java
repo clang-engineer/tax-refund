@@ -8,11 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @AutoConfigureMockMvc
@@ -37,12 +40,14 @@ public class UserResourceIT {
     @Autowired
     private MockMvc restUserMockMvc;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private User user;
 
     public static User createEntity() {
         User user = new User()
                 .useId(DEFAULT_USER_ID)
-                .password(DEFAULT_PASSWORD)
                 .name(DEFAULT_NAME)
                 .regNo(DEFAULT_REG_NO);
         return user;
@@ -51,6 +56,7 @@ public class UserResourceIT {
     @BeforeEach
     public void intiTest() {
         user = createEntity();
+        user.setPassword(passwordEncoder.encode(DEFAULT_PASSWORD));
     }
 
     @Test
@@ -63,6 +69,24 @@ public class UserResourceIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtil.convertObjectToJsonBytes(user)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(DEFAULT_USER_ID)
+    void getUser() throws Exception {
+        // Initialize the database
+        userRepository.saveAndFlush(user);
+
+        // Get the user
+        restUserMockMvc
+                .perform(get("/api/users"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.userId").value(user.getUserId()))
+                .andExpect(jsonPath("$.name").value(user.getName()))
+                .andExpect(jsonPath("$.regNo").value(user.getRegNo())) ;
+
     }
 
 
