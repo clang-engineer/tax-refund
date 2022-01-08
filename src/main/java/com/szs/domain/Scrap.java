@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "tbl_scrap")
-public class Scrap extends AbstractAuditingEntity implements Serializable {
+public class Scrap implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
