@@ -26,6 +26,7 @@ dependencies {
 	implementation 'javax.validation:validation-api:2.0.1.Final'
 	implementation "org.apache.commons:commons-lang3"
 	implementation "org.springframework.boot:spring-boot-starter-security"
+	testImplementation "org.springframework.security:spring-security-test"
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
 	implementation "io.jsonwebtoken:jjwt-api:0.11.2"
 	implementation "io.jsonwebtoken:jjwt-impl:0.11.2"
