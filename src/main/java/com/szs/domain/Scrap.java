@@ -40,15 +40,15 @@ public class Scrap extends AbstractAuditingEntity implements Serializable {
     private Instant workerReqDt;
 
     @ElementCollection
-    @CollectionTable( name="tbl_scrap_001", joinColumns = @JoinColumn(name="scrap_id") )
-    @MapKeyColumn(name="json_key")
-    @Column(name="json_value")
+    @CollectionTable(name = "tbl_scrap_001", joinColumns = @JoinColumn(name = "scrap_id"))
+    @MapKeyColumn(name = "json_key")
+    @Column(name = "json_value")
     private Map<String, String> scrap001 = new HashMap<>();
 
     @ElementCollection
-    @CollectionTable( name="tbl_scrap_002", joinColumns = @JoinColumn(name="scrap_id") )
-    @MapKeyColumn(name="json_key")
-    @Column(name="json_value")
+    @CollectionTable(name = "tbl_scrap_002", joinColumns = @JoinColumn(name = "scrap_id"))
+    @MapKeyColumn(name = "json_key")
+    @Column(name = "json_value")
     private Map<String, String> scrap002 = new HashMap<>();
 
     public Long getId() {
@@ -59,12 +59,22 @@ public class Scrap extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
+    public Scrap id(Long id) {
+        this.id = id;
+        return this;
+    }
+
     public String getAppVer() {
         return appVer;
     }
 
     public void setAppVer(String appVer) {
         this.appVer = appVer;
+    }
+
+    public Scrap appVer(String appVer) {
+        this.appVer = appVer;
+        return this;
     }
 
     public String getHostNm() {
@@ -75,12 +85,22 @@ public class Scrap extends AbstractAuditingEntity implements Serializable {
         this.hostNm = hostNm;
     }
 
+    public Scrap hostNm(String hostNm) {
+        this.hostNm = hostNm;
+        return this;
+    }
+
     public String getErrMsg() {
         return errMsg;
     }
 
     public void setErrMsg(String errMsg) {
         this.errMsg = errMsg;
+    }
+
+    public Scrap errMsg(String errMsg) {
+        this.errMsg = errMsg;
+        return this;
     }
 
     public String getCompany() {
@@ -91,11 +111,20 @@ public class Scrap extends AbstractAuditingEntity implements Serializable {
         this.company = company;
     }
 
+    public Scrap company(String company) {
+        this.company = company;
+        return this;
+    }
+
     public String getSvcCd() {
         return svcCd;
     }
 
     public void setSvcCd(String svcCd) {
+        this.svcCd = svcCd;
+    }
+
+    public Scrap svcCd(String svcCd) {
         this.svcCd = svcCd;
     }
 
@@ -107,12 +136,22 @@ public class Scrap extends AbstractAuditingEntity implements Serializable {
         this.userId = userId;
     }
 
+    public Scrap userId(String userId) {
+        this.userId = userId;
+        return this;
+    }
+
     public Instant getWorkerResDt() {
         return workerResDt;
     }
 
     public void setWorkerResDt(Instant workerResDt) {
         this.workerResDt = workerResDt;
+    }
+
+    public Scrap workerResDt(Instant workerResDt) {
+        this.workerResDt = workerResDt;
+        return this;
     }
 
     public Instant getWorkerReqDt() {
@@ -123,6 +162,11 @@ public class Scrap extends AbstractAuditingEntity implements Serializable {
         this.workerReqDt = workerReqDt;
     }
 
+    public Scrap workerReqDt(Instant workerReqDt) {
+        this.workerReqDt = workerReqDt;
+        return this;
+    }
+
     public Map<String, String> getScrap001() {
         return scrap001;
     }
@@ -131,12 +175,22 @@ public class Scrap extends AbstractAuditingEntity implements Serializable {
         this.scrap001 = scrap001;
     }
 
+    public Scrap scrap001(Map<String, String> scrap001) {
+        this.scrap001 = scrap001;
+        return this;
+    }
+
     public Map<String, String> getScrap002() {
         return scrap002;
     }
 
     public void setScrap002(Map<String, String> scrap002) {
         this.scrap002 = scrap002;
+    }
+
+    public Scrap scrap002(Map<String, String> scrap002) {
+        this.scrap002 = scrap002;
+        return this;
     }
 
     @Override
