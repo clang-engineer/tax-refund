@@ -27,6 +27,7 @@ dependencies {
 	implementation "org.apache.commons:commons-lang3"
 	implementation "org.springframework.boot:spring-boot-starter-security"
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
+	implementation "io.jsonwebtoken:jjwt-api:0.11.2"
 }
 
 test {
