@@ -33,15 +33,15 @@ class UserJWTControllerIT {
     @Transactional
     void testAuthorize() throws Exception {
         User user = new User()
-                .useId("test")
-                .name("test")
-                .regNo("reg_no")
+                .useId("testuserid")
+                .name("testName")
+                .regNo("testRegNo")
                 .password(passwordEncoder.encode("test1234"));
 
         userRepository.saveAndFlush(user);
 
         LoginVM login = new LoginVM();
-        login.setUserId("test");
+        login.setUserId("testuserid");
         login.setPassword("test1234");
 
         mockMvc
@@ -51,9 +51,19 @@ class UserJWTControllerIT {
                 .andExpect(jsonPath("$.id_token").isString())
                 .andExpect(jsonPath("$.id_token").isNotEmpty())
                 .andExpect(header().string("Authorization", not(nullValue())))
-                .andExpect(header().string("Authorization", not(is(emptyString()))))
-        ;
-
+                .andExpect(header().string("Authorization", not(is(emptyString())))) ;
     }
 
+    @Test
+    @Transactional
+    void testAuthorizeFails() throws Exception {
+        LoginVM login = new LoginVM();
+        login.setUserId("wrong-userid");
+        login.setPassword("wrong password");
+        mockMvc
+                .perform(post("/api/authenticate").contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(login)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.id_token").doesNotExist())
+                .andExpect(header().doesNotExist("Authorization"));
+    }
 }
