@@ -3,6 +3,8 @@
 ## Application 기술 스펙
 
 java, spring-boot, jpa, h2, gradle
++ 인증: spring security + jwt
++ Database 형상관리: liquibase
 
 ## 기능명세
 1. 사용자가 삼쩜삼에 가입
@@ -30,7 +32,9 @@ java, spring-boot, jpa, h2, gradle
 
 ## 제약
 - 응답은 모두 application/json으로
-- 각 기능 및 제약사항에 대한 단위 테스트
+- 각 기능 및 제약사항에 대한 단위 테스트 
+  - junit을 사용하여 통합테스트 구현
 - swagger
 - 민감정보(주민등록번호, 비밀번호)등 암호화
+  - 비밀번호는 단방향 암호화를 위해 BCrypt 모듈을 사용
 - README.md 작성 (요구사항 구현 여부, 구현 방법, 검증 결과)
