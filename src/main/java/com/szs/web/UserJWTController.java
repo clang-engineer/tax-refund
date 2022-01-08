@@ -1,6 +1,8 @@
 package com.szs.web;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.szs.security.jwt.JWTFilter;
+import com.szs.security.jwt.TokenProvider;
 import com.szs.web.vm.LoginVM;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,9 +22,12 @@ import javax.validation.Valid;
 @RequestMapping("/api")
 public class UserJWTController {
 
+    private final TokenProvider tokenProvider;
+
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public UserJWTController(AuthenticationManagerBuilder authenticationManagerBuilder) {
+    public UserJWTController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
+        this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
@@ -35,9 +40,10 @@ public class UserJWTController {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        String jwt = tokenProvider.createToken(authentication);
         HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-        return new ResponseEntity<>(new JWTToken("test"), httpHeaders, HttpStatus.OK);
+        httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+        return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
 
 
