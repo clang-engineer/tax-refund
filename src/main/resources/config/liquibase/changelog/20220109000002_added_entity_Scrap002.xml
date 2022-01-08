@@ -3,8 +3,8 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
-    <changeSet id="20220109000001-1" author="young-jun">
-        <createTable tableName="tbl_scrap_001">
+    <changeSet id="20220109000002-1" author="young-jun">
+        <createTable tableName="tbl_scrap_002">
             <column name="scrap_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
@@ -17,14 +17,14 @@
         </createTable>
 
         <addForeignKeyConstraint baseColumnNames="scrap_id"
-                                 baseTableName="tbl_scrap_001"
-                                 constraintName="fk_scrap_001"
+                                 baseTableName="tbl_scrap_002"
+                                 constraintName="fk_scrap_002"
                                  referencedColumnNames="id"
                                  referencedTableName="tbl_scrap"/>
     </changeSet>
 
-    <changeSet id="20220109000001-1-data" author="young-jun">
-        <loadData file="config/liquibase/data/scrap_json.csv" separator=";" tableName="tbl_scrap_001">
+    <changeSet id="20220109000002-1-data" author="young-jun">
+        <loadData file="config/liquibase/data/scrap_json.csv" separator=";" tableName="tbl_scrap_002">
             <column name="scrap_id" type="numeric"/>
             <column name="json_key" type="string"/>
             <column name="json_value" type="string"/>
