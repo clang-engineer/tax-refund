@@ -16,5 +16,5 @@
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20220109000000_added_entity_Scrap.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20220109000001_added_entity_ScrapJson.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20220109000001_added_entity_Scrap001.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
