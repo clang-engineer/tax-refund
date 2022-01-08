@@ -1,13 +1,13 @@
-package com.recruit3o3test;
+package com.szs;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class YoungJunApplication {
+public class TaxRefundApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(YoungJunApplication.class, args);
+		SpringApplication.run(TaxRefundApplication.class, args);
 	}
 
 }

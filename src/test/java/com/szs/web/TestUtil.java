@@ -1,4 +1,4 @@
-package com.recruit3o3test.web;
+package com.szs.web;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;

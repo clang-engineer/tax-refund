@@ -1,6 +1,6 @@
-package com.recruit3o3test.security;
+package com.szs.security;
 
-import com.recruit3o3test.config.Constants;
+import com.szs.config.Constants;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 

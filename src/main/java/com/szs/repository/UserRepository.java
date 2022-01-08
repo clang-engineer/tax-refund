@@ -1,6 +1,6 @@
-package com.recruit3o3test.repository;
+package com.szs.repository;
 
-import com.recruit3o3test.domain.User;
+import com.szs.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.recruit3o3test.domain;
+package com.szs.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.CreatedBy;

@@ -1,7 +1,7 @@
-package com.recruit3o3test.web;
+package com.szs.web;
 
-import com.recruit3o3test.domain.User;
-import com.recruit3o3test.repository.UserRepository;
+import com.szs.domain.User;
+import com.szs.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

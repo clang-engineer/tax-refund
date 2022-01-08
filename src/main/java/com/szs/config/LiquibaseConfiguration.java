@@ -1,4 +1,4 @@
-package com.recruit3o3test.config;
+package com.szs.config;
 
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.context.annotation.Bean;

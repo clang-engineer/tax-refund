@@ -1,4 +1,4 @@
-package com.recruit3o3test.config;
+package com.szs.config;
 
 public final class Constants {
 

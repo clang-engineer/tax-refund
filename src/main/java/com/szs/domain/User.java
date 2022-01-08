@@ -1,6 +1,6 @@
-package com.recruit3o3test.domain;
+package com.szs.domain;
 
-import com.recruit3o3test.config.Constants;
+import com.szs.config.Constants;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
