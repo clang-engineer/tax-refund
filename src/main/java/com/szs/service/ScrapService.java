@@ -53,6 +53,10 @@ public class ScrapService {
         Map map = Map.of("name", name, "regNo", regNo);
         HashMap externalScrapInfo = (HashMap) this.restTemplate.postForObject("https://codetest.3o3.co.kr/scrap/", map, Map.class);
 
+        if (externalScrapInfo.size() <= 1) {
+            return null;
+        }
+
         Scrap result = transformJsonToScarp(externalScrapInfo);
         scrapRepository.save(result);
         return Optional.of(result);

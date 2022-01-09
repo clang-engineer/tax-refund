@@ -26,6 +26,7 @@ java, spring-boot, jpa, h2, gradle
 
 ### 사용자 정보 스크랩
 - path: /szs/scrap
+>> 성공과 실패시의 json 응답 형태가 달라서 분기처리해야함.. data로 감싸진 경우 정보가 없다. 
 
 ### 환급액 계산
 - path: /szs/refund
