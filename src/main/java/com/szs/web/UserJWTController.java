@@ -51,7 +51,7 @@ public class UserJWTController {
 
         Cookie cookie = CookieUtils.createCookie(
                 JWTFilter.AUTHORIZATION_TOKEN,
-                URLEncoder.encode("Bearer " + jwt, "UTF-8"),
+                URLEncoder.encode(jwt, "UTF-8"),
                 (int) applicationProperties.getSecurity().getAuthentication().getJwt().getTokenValidityInSeconds());
 
         response.addCookie(cookie);
