@@ -2,12 +2,15 @@ package com.szs.web;
 
 import com.szs.IntegrationTest;
 import com.szs.domain.Scrap;
+import com.szs.domain.User;
 import com.szs.repository.ScrapRepository;
+import com.szs.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,12 +38,21 @@ class ScrapResourceIT {
     private static final Map DEFAULT_SCRAP_002 = Map.of("key2-1", "value2-1", "key2-2", "value2-2");
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ScrapRepository scrapRepository;
 
     @Autowired
     private MockMvc restScrapMockMvc;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
     private Scrap scrap;
+
+    private User user;
 
     public static Scrap createEntity() {
         Scrap scrap = new Scrap()
@@ -59,6 +71,9 @@ class ScrapResourceIT {
 
     @BeforeEach
     public void initTest() {
+        user = UserResourceIT.createEntity().useId(DEFAULT_USER_ID);
+        user.setPassword(passwordEncoder.encode("1234"));
+
         scrap = createEntity();
     }
 
@@ -66,6 +81,7 @@ class ScrapResourceIT {
     @Transactional
     @WithMockUser(DEFAULT_USER_ID)
     void getScrap() throws Exception {
+        userRepository.saveAndFlush(user);
         scrapRepository.saveAndFlush(scrap);
 
         restScrapMockMvc

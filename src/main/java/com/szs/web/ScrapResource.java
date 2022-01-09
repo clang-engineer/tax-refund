@@ -1,8 +1,7 @@
 package com.szs.web;
 
 import com.szs.domain.Scrap;
-import com.szs.repository.ScrapRepository;
-import com.szs.security.SecurityUtils;
+import com.szs.service.ScrapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,18 +16,18 @@ import org.springframework.web.server.ResponseStatusException;
 public class ScrapResource {
     private Logger log = LoggerFactory.getLogger(ScrapResource.class);
 
-    private final ScrapRepository scrapRepository;
+    private final ScrapService scrapService;
 
-    public ScrapResource(ScrapRepository scrapRepository) {
-        this.scrapRepository = scrapRepository;
+    public ScrapResource(ScrapService scrapService) {
+        this.scrapService = scrapService;
     }
 
 
     @GetMapping("/scrap")
-    public ResponseEntity<Scrap> getScrap() {
+    public ResponseEntity<Scrap> getScrap() throws Exception {
         log.debug("REST request to get scrap");
 
-        return SecurityUtils.getCurrentUserLogin().flatMap(scrapRepository::findOneByUserId)
+        return scrapService.getScrapInfo()
                 .map((response) -> ResponseEntity.ok(response))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
