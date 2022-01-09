@@ -1,41 +1,41 @@
-# 요구사항
+# API 구축 과제 - 지원자 김영준
 
-## Application 기술 스펙
+## 기술
+- 과제 필수 요구사항인 java, spring-boot, jpa, h2, gradle을 구현에 사용하였습니다.
+- 인증부는 spring security + jwt를 db 스키마 관리는 liquibase를 추가로 사용하였습니다.
+- h2는 http://localhost:8080/h2-console 에서 id: young-jun / password:공란 으로 확인가능합니다.
+- swagger-ui는 http://localhost:8080/swagger-ui/ 에서 확인 가능합니다.
 
-java, spring-boot, jpa, h2, gradle
-+ 인증: spring security + jwt
-+ Database 형상관리: liquibase
-
-## 기능명세
-1. 사용자가 삼쩜삼에 가입
-2. 가입한 유저정보를 스크랩하여 환급액이 있는지 조회
-3. 조회된 금액을 계산 후 사용자에게 실제 환급액 전달
-
-## API
-
-### 회윈가입
+## 1-1. 회윈가입 API
 - path: /szs/signup
 - param: userId(String), password(String), name(String), regNo(String)
+- 패스워드는 BCryptPasswordEncoder를 사용하여 단방향 암호화 처리하였습니다.
+- 주민등록번호는 AES256알고리즘을 사용하여 양방향 암호화 처리하였습니다.
+- 주민등록번호는 정규성검증하여 정해진 패턴만 입릭가능하도록 처리하였습니다.
 
-### 로그인
+## 1-2 로그인 API
 - path: /szs/login
 - param: userId(String), password(String)
+- 인증에는 스프링 시큐리티를 사용하였고 jwt filter를 추가하였습니다.
+- 로그인 성공시 jwt token을 발급하고 해당 토큰의 유효성을 signup, login을 제외한 모든 api경로에서 확인하도록 구성하였습니다.
 
-### 사용자 정보 조회
+## 1-3 내 정보보기 API
 - path: /szs/me
+- param: x
+- 인증 토큰 이용하여 본인 정보만 확인하도록 구성하였습니다.
 
-### 사용자 정보 스크랩
+## 2 유저 정보 스크랩 API
 - path: /szs/scrap
->> 성공과 실패시의 json 응답 형태가 달라서 분기처리해야함.. data로 감싸진 경우 정보가 없다. 
+- param: x
+- 인증 토큰을 이용하여 본인 정보만 확인하도록 구성하였습니다.
+- 스크랩 정보를 저장하기 위해 tbl_scrap, tbl_scrap001, tbl_scrap002 테이블을 추가하였습니다.
+- 로컬 database에 스크랩한 정보가 있으면 바로 응답, 아니면 스크랩 api를 호출하도록 구성하였습니다.
+- 최초 화원 가입시 스크랩을 1회 진행하도록 구성하였습니다.
+- 매일 새벽1시에 회원가입정보에는 존재하나 스크랩 정보가 없는 사용자를 대상으로\
+  스크랩 정보를 호출 및 저장하도록 구성하였습니다.
 
-### 환급액 계산
+## 3 환급액 계산 API
 - path: /szs/refund
+- param: x
 
-## 제약
-- 응답은 모두 application/json으로
-- 각 기능 및 제약사항에 대한 단위 테스트 
-  - junit을 사용하여 통합테스트 구현
-- swagger
-- 민감정보(주민등록번호, 비밀번호)등 암호화
-  - 비밀번호는 단방향 암호화를 위해 BCrypt 모듈을 사용
-- README.md 작성 (요구사항 구현 여부, 구현 방법, 검증 결과)
+## 주관식 과제
