@@ -75,10 +75,24 @@ class ScrapServiceIT {
     @Test
     @Transactional
     @WithMockUser(DEFAULT_USER_ID)
-    void getScrap() throws Exception {
+    void getScrapFromLocalNetwork() throws Exception {
 
         userRepository.saveAndFlush(user);
         scrapRepository.saveAndFlush(scrap);
+
+        Optional<Scrap> scrap = scrapService.getScrapInfo();
+
+        assertThat(scrap).isPresent();
+        assertThat(scrap.orElse(null).getAppVer()).isEqualTo(DEFAULT_APP_VER);
+
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(DEFAULT_USER_ID)
+    void getScrapFromExternalNetwork() throws Exception {
+
+        userRepository.saveAndFlush(user);
 
         Optional<Scrap> scrap = scrapService.getScrapInfo();
 
