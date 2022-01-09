@@ -94,12 +94,12 @@ public class ScrapServiceIT {
 
     @Test
     @Transactional
-    @WithMockUser("1")
+    @WithMockUser(HONG_GIL_DONG_USER_ID)
     void getScrapFromExternalNetwork() throws Exception {
 
-        user.setUserId("1");
-        user.setName("홍길동");
-        user.setRegNo("860824-1655068");
+        user.setUserId(HONG_GIL_DONG_USER_ID);
+        user.setName(HONG_GIL_DONG_NAME);
+        user.setRegNo(AES256Utils.encrypt(HONG_GIL_DONG_REG_NO));
         userRepository.saveAndFlush(user);
 
         Optional<Scrap> scrap = scrapService.getScrapInfo();

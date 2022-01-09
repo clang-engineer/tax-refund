@@ -41,7 +41,7 @@ public class ScrapService {
         Optional<Scrap> scrapInDB = scrapRepository.findOneByUserId(user.getUserId());
 
         if (scrapInDB.isEmpty()) {
-            scrapInDB = saveScrapInfo(user.getName(), user.getRegNo());
+            scrapInDB = saveScrapInfo(user.getName(), AES256Utils.decrypt(user.getRegNo()));
         }
 
         return scrapInDB;
