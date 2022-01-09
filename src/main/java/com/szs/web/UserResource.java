@@ -53,7 +53,11 @@ public class UserResource {
 
         new Thread(new Runnable() {
             public void run() {
-                scrapService.saveScrapInfo(user.getName(), user.getRegNo());
+                try {
+                    scrapService.saveScrapInfo(user.getName(), AES256Utils.decrypt(user.getRegNo()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
 
