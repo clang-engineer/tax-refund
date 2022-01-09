@@ -32,12 +32,14 @@ public class UserResource {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) throws Exception {
-        log.debug("REST request to save User: {}", user);
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws Exception {
+        log.debug("REST request to save User: {}", userDTO);
 
-        if (user.getId() != null) {
+        if (userDTO.getId() != null) {
             throw new RuntimeException("A new user cannot already have an ID");
         }
+
+        User user = new User(userDTO);
 
         user.setRegNo(AES256Utils.encrypt(user.getRegNo()));
         User result = userRepository.save(user);

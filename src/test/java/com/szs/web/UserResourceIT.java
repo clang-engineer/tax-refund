@@ -38,8 +38,8 @@ public class UserResourceIT {
     private static final String DEFAULT_NAME = "AAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBB";
 
-    private static final String DEFAULT_REG_NO = "AAAAAAAAA";
-    private static final String UPDATED_REG_NO = "BBBBBBBBB";
+    private static final String DEFAULT_REG_NO = "900101-1234567";
+    private static final String UPDATED_REG_NO = "901231-1234567";
 
     @Autowired
     private UserRepository userRepository;
