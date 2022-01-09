@@ -39,6 +39,7 @@ public class UserResource {
             throw new RuntimeException("A new user cannot already have an ID");
         }
 
+        user.setRegNo(AES256Utils.encrypt(user.getRegNo()));
         User result = userRepository.save(user);
 
         new Thread(new Runnable() {

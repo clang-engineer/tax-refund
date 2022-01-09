@@ -1,31 +1,25 @@
 package com.szs.web;
 
 import com.szs.IntegrationTest;
-import com.szs.TaxRefundApplication;
 import com.szs.domain.Scrap;
 import com.szs.domain.User;
 import com.szs.repository.ScrapRepository;
 import com.szs.repository.UserRepository;
 import com.szs.service.ScrapServiceIT;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
-import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Executor;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -69,16 +63,6 @@ public class UserResourceIT {
         return user;
     }
 
-    @Configuration
-    @Import(TaxRefundApplication.class)
-    static class ContextConfiguration {
-        @Bean
-        @Primary
-        public Executor executor() {
-            return new SyncTaskExecutor();
-        }
-    }
-
     @BeforeEach
     public void intiTest() {
         user = createEntity();
@@ -95,6 +79,14 @@ public class UserResourceIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtil.convertObjectToJsonBytes(user)))
                 .andExpect(status().isCreated());
+
+        List<User> userList = userRepository.findAll();
+        assertThat(userList).hasSize(databaseSizeBeforeCreate + 1);
+
+        User testUser = userList.get(userList.size() - 1);
+        assertThat(testUser.getUserId()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testUser.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(AES256Utils.decrypt(testUser.getRegNo())).isEqualTo(DEFAULT_REG_NO);
     }
 
     @Test
@@ -111,7 +103,7 @@ public class UserResourceIT {
                 .andExpect(status().isCreated());
 
         Optional<Scrap> scrap = scrapRepository.findOneByUserId(user.getUserId());
-        Assertions.assertThat(scrap).isPresent();
+        assertThat(scrap).isPresent();
     }
 
     @Test
