@@ -69,6 +69,14 @@ public class ScrapServiceIT {
         return scrap;
     }
 
+    public void saveHongGilDongLocally() throws Exception {
+        user.setUserId(HONG_GIL_DONG_USER_ID);
+        user.setName(HONG_GIL_DONG_NAME);
+        user.setRegNo(AES256Utils.encrypt(HONG_GIL_DONG_REG_NO));
+
+        userRepository.saveAndFlush(user);
+    }
+
     @BeforeEach
     public void initTest() {
         user = UserResourceIT.createEntity().useId(DEFAULT_USER_ID);
@@ -97,11 +105,7 @@ public class ScrapServiceIT {
     @WithMockUser(HONG_GIL_DONG_USER_ID)
     void getScrapFromExternalNetwork() throws Exception {
 
-        user.setUserId(HONG_GIL_DONG_USER_ID);
-        user.setName(HONG_GIL_DONG_NAME);
-        user.setRegNo(AES256Utils.encrypt(HONG_GIL_DONG_REG_NO));
-        userRepository.saveAndFlush(user);
-
+        saveHongGilDongLocally();
         Optional<Scrap> scrap = scrapService.getScrapInfo();
 
         assertThat(scrap).isPresent();
@@ -112,11 +116,7 @@ public class ScrapServiceIT {
     @Transactional
     void assertThatScrappingScheduledIn24Hours() throws Exception {
 
-        user.setUserId(HONG_GIL_DONG_USER_ID);
-        user.setName(HONG_GIL_DONG_NAME);
-        user.setRegNo(AES256Utils.encrypt(HONG_GIL_DONG_REG_NO));
-        userRepository.saveAndFlush(user);
-
+        saveHongGilDongLocally();
         scrapService.excuteScrapping();
 
         Optional<Scrap> scrap = scrapRepository.findOneByUserId("1");
