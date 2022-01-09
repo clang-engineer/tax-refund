@@ -1,3 +1,7 @@
 id;user_id;password;name;reg_no;created_by;last_modified_by
 1;admin;$2a$10$gSAhZrxMllrbgj/kkK9UceBPpChGWJA7SYIb1Mqo.n5aNLq1/oRrC;Administrator;D69baRqUzoxXCaUoBPK3+w==;admin;admin
 2;user;$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K;User;P0Wn17CgR4I4NbYgPpmYjw==;user;user
+3;test1;$2a$10$WH6vnIpvrB.x3aYwSUysQ.Gwf07Jo0kTTe2cT2ehTWsrriiZVzXMu;홍길동;ldU2Z5ZlRuwPfYA1YfvOTw==;admin;admin
+4;test2;$2a$10$WH6vnIpvrB.x3aYwSUysQ.Gwf07Jo0kTTe2cT2ehTWsrriiZVzXMu;김둘리;KR4+W2hF08AmeT64aOaUCQ==;admin;admin
+5;test3;$2a$10$WH6vnIpvrB.x3aYwSUysQ.Gwf07Jo0kTTe2cT2ehTWsrriiZVzXMu;마징가;2Q9UjrPRMji8dh7cnXi4Xw==;admin;admin
+6;test4;$2a$10$WH6vnIpvrB.x3aYwSUysQ.Gwf07Jo0kTTe2cT2ehTWsrriiZVzXMu;베지터;/h0yhcTaxV3BpjDoiwUoxQ==;admin;admin
