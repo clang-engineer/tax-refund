@@ -42,7 +42,7 @@ public class UserResource {
         log.debug("REST request to save User: {}", userDTO);
 
         if (userDTO.getId() != null) {
-            throw new RuntimeException("A new user cannot already have an ID");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         User user = new User(userDTO);
@@ -61,11 +61,12 @@ public class UserResource {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDTO> getUser() {
+    public ResponseEntity<UserDTO> getUser() throws Exception {
         log.debug("REST request to get User");
 
-        return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).map(UserDTO::new)
-                .map((response) -> ResponseEntity.ok(response))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        UserDTO userDTO = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).map(UserDTO::new).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        userDTO.setRegNo(AES256Utils.decrypt(userDTO.getRegNo()));
+
+        return ResponseEntity.ok(userDTO);
     }
 }

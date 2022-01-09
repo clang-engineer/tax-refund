@@ -64,7 +64,7 @@ public class UserResourceIT {
     }
 
     @BeforeEach
-    public void intiTest() {
+    public void intiTest() throws Exception {
         user = createEntity();
         user.setPassword(passwordEncoder.encode(DEFAULT_PASSWORD));
     }
@@ -111,6 +111,7 @@ public class UserResourceIT {
     @WithMockUser(DEFAULT_USER_ID)
     void getUser() throws Exception {
         // Initialize the database
+        user.setRegNo(AES256Utils.encrypt(user.getRegNo()));
         userRepository.saveAndFlush(user);
 
         // Get the user
@@ -120,7 +121,7 @@ public class UserResourceIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.userId").value(user.getUserId()))
                 .andExpect(jsonPath("$.name").value(user.getName()))
-                .andExpect(jsonPath("$.regNo").value(user.getRegNo())) ;
+                .andExpect(jsonPath("$.regNo").value(DEFAULT_REG_NO));
 
     }
 
