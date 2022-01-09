@@ -15,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("/szs")
@@ -33,7 +32,7 @@ public class UserResource {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) throws URISyntaxException {
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) throws Exception {
         log.debug("REST request to save User: {}", user);
 
         if (user.getId() != null) {
@@ -52,11 +51,11 @@ public class UserResource {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDTO> getUser() throws URISyntaxException {
+    public ResponseEntity<UserDTO> getUser() {
         log.debug("REST request to get User");
 
         return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).map(UserDTO::new)
                 .map((response) -> ResponseEntity.ok(response))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
     }
 }
