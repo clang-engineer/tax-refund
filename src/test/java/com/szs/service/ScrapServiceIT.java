@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @IntegrationTest
 @Transactional
-class ScrapServiceIT {
+public class ScrapServiceIT {
     private static final String DEFAULT_APP_VER = "AAAAAAAAA";
     private static final String DEFAULT_HOST_NM = "AAAAAAAAA";
     private static final String DEFAULT_ERR_MSG = "AAAAAAAAA";
@@ -33,9 +33,9 @@ class ScrapServiceIT {
     private static final Map DEFAULT_SCRAP_001 = Map.of("key1-1", "value1-1", "key1-2", "value1-2");
     private static final Map DEFAULT_SCRAP_002 = Map.of("key2-1", "value2-1", "key2-2", "value2-2");
 
-    private static final String HONG_GIL_DONG_USER_ID = "1";
-    private static final String HONG_GIL_DONG_NAME = "홍길동";
-    private static final String HONG_GIL_DONG_REG_NO = "860824-1655068";
+    public static final String HONG_GIL_DONG_USER_ID = "1";
+    public static final String HONG_GIL_DONG_NAME = "홍길동";
+    public static final String HONG_GIL_DONG_REG_NO = "860824-1655068";
 
     @Autowired
     private UserRepository userRepository;
