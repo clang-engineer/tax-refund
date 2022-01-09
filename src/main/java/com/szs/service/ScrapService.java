@@ -8,15 +8,14 @@ import com.szs.security.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -61,12 +60,9 @@ public class ScrapService {
 
     private Scrap transformJsonToScarp(HashMap externalJson) {
         HashMap jsonList = (HashMap) externalJson.get("jsonList");
+
         Map scrap001 = (HashMap) ((ArrayList) jsonList.get("scrap001")).get(0);
         Map scrap002 = (HashMap) ((ArrayList) jsonList.get("scrap002")).get(0);
-
-        if (scrap001 == null || scrap002 == null) {
-            return null;
-        }
 
         Scrap result = new Scrap()
                 .appVer((String) externalJson.get("appVer"))
@@ -81,5 +77,13 @@ public class ScrapService {
                 .scrap002(scrap002);
 
         return result;
+    }
+
+    @Scheduled(cron = "0 0 1 * * ?")
+    void excuteScrapping() {
+        List<String> scrappedUserId = scrapRepository.findAll().stream().map(Scrap::getUserId).collect(Collectors.toList());
+        userRepository.findAll().stream()
+                .filter(user -> !scrappedUserId.contains(user.getUserId()))
+                .forEach(user -> saveScrapInfo(user.getName(), user.getRegNo()));
     }
 }

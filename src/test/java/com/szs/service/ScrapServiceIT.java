@@ -33,6 +33,10 @@ class ScrapServiceIT {
     private static final Map DEFAULT_SCRAP_001 = Map.of("key1-1", "value1-1", "key1-2", "value1-2");
     private static final Map DEFAULT_SCRAP_002 = Map.of("key2-1", "value2-1", "key2-2", "value2-2");
 
+    private static final String HONG_GIL_DONG_USER_ID = "1";
+    private static final String HONG_GIL_DONG_NAME = "홍길동";
+    private static final String HONG_GIL_DONG_REG_NO = "860824-1655068";
+
     @Autowired
     private UserRepository userRepository;
 
@@ -103,5 +107,20 @@ class ScrapServiceIT {
         assertThat(scrap.orElse(null).getUserId()).isEqualTo("1");
     }
 
+    @Test
+    @Transactional
+    void assertThatScrappingScheduledIn24Hours() throws Exception {
+
+        user.setUserId(HONG_GIL_DONG_USER_ID);
+        user.setName(HONG_GIL_DONG_NAME);
+        user.setRegNo(HONG_GIL_DONG_REG_NO);
+        userRepository.saveAndFlush(user);
+
+        scrapService.excuteScrapping();
+
+        Optional<Scrap> scrap = scrapRepository.findOneByUserId("1");
+
+        assertThat(scrap.orElse(null).getUserId()).isEqualTo("1");
+    }
 
 }
