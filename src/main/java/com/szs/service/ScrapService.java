@@ -5,6 +5,7 @@ import com.szs.domain.User;
 import com.szs.repository.ScrapRepository;
 import com.szs.repository.UserRepository;
 import com.szs.security.SecurityUtils;
+import com.szs.web.AES256Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -85,9 +86,17 @@ public class ScrapService {
 
     @Scheduled(cron = "0 0 1 * * ?")
     void excuteScrapping() {
+        log.debug("Excute daily scrap schedule");
+
         List<String> scrappedUserId = scrapRepository.findAll().stream().map(Scrap::getUserId).collect(Collectors.toList());
         userRepository.findAll().stream()
                 .filter(user -> !scrappedUserId.contains(user.getUserId()))
-                .forEach(user -> saveScrapInfo(user.getName(), user.getRegNo()));
+                .forEach(user -> {
+                    try {
+                        saveScrapInfo(user.getName(), AES256Utils.decrypt(user.getRegNo()));
+                    } catch (Exception e) {
+                        log.debug("Error in save scrap info {}", e);
+                    }
+                });
     }
 }

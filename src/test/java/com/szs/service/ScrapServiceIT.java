@@ -5,6 +5,7 @@ import com.szs.domain.Scrap;
 import com.szs.domain.User;
 import com.szs.repository.ScrapRepository;
 import com.szs.repository.UserRepository;
+import com.szs.web.AES256Utils;
 import com.szs.web.UserResourceIT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -113,7 +114,7 @@ public class ScrapServiceIT {
 
         user.setUserId(HONG_GIL_DONG_USER_ID);
         user.setName(HONG_GIL_DONG_NAME);
-        user.setRegNo(HONG_GIL_DONG_REG_NO);
+        user.setRegNo(AES256Utils.encrypt(HONG_GIL_DONG_REG_NO));
         userRepository.saveAndFlush(user);
 
         scrapService.excuteScrapping();
