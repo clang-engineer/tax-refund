@@ -15,9 +15,10 @@ public class UserDTO {
     private String userId;
 
     @NotNull
-    @Size(min = 60, max = 60)
+    @Size(min = 4, max = 60)
     private String password;
 
+    @NotNull
     private String name;
 
     @Pattern(regexp = Constants.REG_NO_REGEX)

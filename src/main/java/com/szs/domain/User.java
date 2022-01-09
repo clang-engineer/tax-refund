@@ -25,7 +25,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     private String userId;
 
     @NotNull
-    @Size(min = 60, max = 60)
+    @Size(min = 4, max = 60)
     @Column(name = "password", length = 60, nullable = false)
     private String password;
 
