@@ -10,6 +10,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
@@ -48,9 +49,10 @@ public class JWTFilter extends GenericFilterBean {
             return jwtParam;
         }
 
-        String jwtCookie = CookieUtils.getCookie(request, AUTHORIZATION_TOKEN).getValue();
-        if (StringUtils.hasText(jwtCookie)) {
-            return jwtCookie;
+        Cookie jwtCookie = CookieUtils.getCookie(request, AUTHORIZATION_TOKEN);
+
+        if (jwtCookie != null && StringUtils.hasText(jwtCookie.getValue())) {
+            return jwtCookie.getValue();
         }
         return null;
     }
