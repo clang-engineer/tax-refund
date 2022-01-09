@@ -2,7 +2,7 @@ package com.szs.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,10 +34,10 @@ public class Scrap implements Serializable {
     private String userId;
 
     @Column(name = "worker_res_dt")
-    private Instant workerResDt;
+    private LocalDateTime workerResDt;
 
     @Column(name = "worker_req_dt")
-    private Instant workerReqDt;
+    private LocalDateTime workerReqDt;
 
     @ElementCollection
     @CollectionTable(name = "tbl_scrap_001", joinColumns = @JoinColumn(name = "scrap_id"))
@@ -142,28 +142,28 @@ public class Scrap implements Serializable {
         return this;
     }
 
-    public Instant getWorkerResDt() {
+    public LocalDateTime getWorkerResDt() {
         return workerResDt;
     }
 
-    public void setWorkerResDt(Instant workerResDt) {
+    public void setWorkerResDt(LocalDateTime workerResDt) {
         this.workerResDt = workerResDt;
     }
 
-    public Scrap workerResDt(Instant workerResDt) {
+    public Scrap workerResDt(LocalDateTime workerResDt) {
         this.workerResDt = workerResDt;
         return this;
     }
 
-    public Instant getWorkerReqDt() {
+    public LocalDateTime getWorkerReqDt() {
         return workerReqDt;
     }
 
-    public void setWorkerReqDt(Instant workerReqDt) {
+    public void setWorkerReqDt(LocalDateTime workerReqDt) {
         this.workerReqDt = workerReqDt;
     }
 
-    public Scrap workerReqDt(Instant workerReqDt) {
+    public Scrap workerReqDt(LocalDateTime workerReqDt) {
         this.workerReqDt = workerReqDt;
         return this;
     }

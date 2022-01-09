@@ -12,7 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.hasKey;
@@ -29,8 +29,8 @@ class ScrapResourceIT {
     private static final String DEFAULT_COMPANY = "AAAAAAAAA";
     private static final String DEFAULT_SVC_CD = "AAAAAAAAA";
     private static final String DEFAULT_USER_ID = "AAAAAAAAA";
-    private static final Instant DEFAULT_WORKER_RES_DT = Instant.now();
-    private static final Instant DEFAULT_WORKER_REQ_DT = Instant.now();
+    private static final LocalDateTime DEFAULT_WORKER_RES_DT = LocalDateTime.now();
+    private static final LocalDateTime DEFAULT_WORKER_REQ_DT = LocalDateTime.now();
     private static final Map DEFAULT_SCRAP_001 = Map.of("key1-1", "value1-1", "key1-2", "value1-2");
     private static final Map DEFAULT_SCRAP_002 = Map.of("key2-1", "value2-1", "key2-2", "value2-2");
 
