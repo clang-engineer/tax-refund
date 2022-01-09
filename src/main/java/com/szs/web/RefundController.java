@@ -46,36 +46,58 @@ public class RefundController {
 
         Scrap scrap = scrapService.getScrapInfo().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
-        Double limitedMoney = getLimitedMoney(Integer.parseInt(scrap.getScrap001().get("총지급액")));
-        Double deductedMoney = getDeductedMoney(Integer.parseInt(scrap.getScrap002().get("총사용금액")));
-        Double refundMoney = Math.min(limitedMoney, deductedMoney);
+        int limitedMoney = getLimitedMoney(Integer.parseInt(scrap.getScrap001().get("총지급액")));
+        int deductedMoney = getDeductedMoney(Integer.parseInt(scrap.getScrap002().get("총사용금액")));
+        int refundMoney = Math.min(limitedMoney, deductedMoney);
 
-        result.put("한도", limitedMoney.toString());
-        result.put("공제액", deductedMoney.toString());
-        result.put("환급액", refundMoney.toString());
+        result.put("한도", getFormattedMoney(limitedMoney));
+        result.put("공제액", getFormattedMoney(deductedMoney));
+        result.put("환급액", getFormattedMoney(refundMoney));
 
         return ResponseEntity.ok(result);
     }
 
-    public double getLimitedMoney(int totalSalary) {
+    public Integer getLimitedMoney(Integer totalSalary) {
         if (totalSalary <= Constants.REFUND_LOWER_LIMIT) {
             return 740000;
         } else if (totalSalary <= Constants.REFUND_UPPER_LIMIT) {
-            double temp = 740000 - (totalSalary - Constants.REFUND_LOWER_LIMIT) * 0.008;
+            Integer temp = (int) (740000 - (totalSalary - Constants.REFUND_LOWER_LIMIT) * 0.008);
             return Math.max(660000, temp);
         } else {
-            double temp = 660000 - (totalSalary - Constants.REFUND_UPPER_LIMIT) * 0.5;
+            Integer temp = (int) (660000 - (totalSalary - Constants.REFUND_UPPER_LIMIT) * 0.5);
             return Math.max(500000, temp);
         }
     }
 
-    public double getDeductedMoney(int calculateTax) {
-        int standardMoney = 1300000;
+    public Integer getDeductedMoney(Integer calculateTax) {
+        Integer standardMoney = 1300000;
         if (calculateTax <= standardMoney) {
-            return calculateTax * 0.55;
+            return (int) (calculateTax * 0.55);
         } else {
-            return 715000 + (calculateTax - standardMoney) * 0.3;
+            return (int) (715000 + (calculateTax - standardMoney) * 0.3);
         }
+    }
+
+    public String getFormattedMoney(Integer money) {
+        int first = money / 10000;
+        int second = money % 10000 / 1000;
+
+        String result = "";
+        if (first != 0) {
+            result += first + "만";
+        }
+
+        if (second != 0) {
+            if (first != 0) {
+                result += " ";
+            }
+            result += second + "천";
+        }
+
+        result += "원";
+
+        return result;
+
     }
 
 }
