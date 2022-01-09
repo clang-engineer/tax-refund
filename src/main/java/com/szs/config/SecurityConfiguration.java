@@ -1,5 +1,7 @@
 package com.szs.config;
 
+import com.szs.security.jwt.JWTConfigurer;
+import com.szs.security.jwt.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +14,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private final TokenProvider tokenProvider;
+
+    public SecurityConfiguration(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -39,6 +48,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login*").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .and()
-                .httpBasic();
+                .httpBasic()
+                .and()
+                .apply(securityConfigurerAdapter());
     }
+
+    private JWTConfigurer securityConfigurerAdapter() {
+        return new JWTConfigurer(tokenProvider);
+    }
+
 }
