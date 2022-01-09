@@ -3,6 +3,7 @@ package com.szs.web;
 import com.szs.domain.User;
 import com.szs.repository.UserRepository;
 import com.szs.security.SecurityUtils;
+import com.szs.service.ScrapService;
 import com.szs.service.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,11 @@ public class UserResource {
 
     private final UserRepository userRepository;
 
-    public UserResource(UserRepository userRepository) {
+    private final ScrapService scrapService;
+
+    public UserResource(UserRepository userRepository, ScrapService scrapService) {
         this.userRepository = userRepository;
+        this.scrapService = scrapService;
     }
 
     @PostMapping("/signup")
@@ -37,6 +41,12 @@ public class UserResource {
         }
 
         User result = userRepository.save(user);
+
+        new Thread(new Runnable() {
+            public void run() {
+                scrapService.saveScrapInfo(user.getName(), user.getRegNo());
+            }
+        }).start();
 
         return ResponseEntity.created(new URI("/api/users" + result.getId())).body(result);
     }
