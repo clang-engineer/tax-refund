@@ -1,5 +1,6 @@
 package com.szs.security.jwt;
 
+import com.szs.web.CookieUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -41,9 +42,15 @@ public class JWTFilter extends GenericFilterBean {
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
-        String jwt = request.getParameter(AUTHORIZATION_TOKEN);
-        if (StringUtils.hasText(jwt)) {
-            return jwt;
+
+        String jwtParam = request.getParameter(AUTHORIZATION_TOKEN);
+        if (StringUtils.hasText(jwtParam)) {
+            return jwtParam;
+        }
+
+        String jwtCookie = CookieUtils.getCookie(request, AUTHORIZATION_TOKEN).getValue();
+        if (StringUtils.hasText(jwtCookie)) {
+            return jwtCookie;
         }
         return null;
     }
