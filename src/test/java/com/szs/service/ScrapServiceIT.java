@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
@@ -89,16 +89,18 @@ class ScrapServiceIT {
 
     @Test
     @Transactional
-    @WithMockUser(DEFAULT_USER_ID)
+    @WithMockUser("1")
     void getScrapFromExternalNetwork() throws Exception {
 
+        user.setUserId("1");
+        user.setName("홍길동");
+        user.setRegNo("860824-1655068");
         userRepository.saveAndFlush(user);
 
         Optional<Scrap> scrap = scrapService.getScrapInfo();
 
         assertThat(scrap).isPresent();
-        assertThat(scrap.orElse(null).getAppVer()).isEqualTo(DEFAULT_APP_VER);
-
+        assertThat(scrap.orElse(null).getUserId()).isEqualTo("1");
     }
 
 
