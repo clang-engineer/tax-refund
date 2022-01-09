@@ -17,7 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/szs")
 @Transactional
 public class UserResource {
     private Logger log = LoggerFactory.getLogger(UserResource.class);
@@ -28,7 +28,7 @@ public class UserResource {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/users")
+    @PostMapping("/signup")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) throws URISyntaxException {
         log.debug("REST request to save User: {}", user);
 
@@ -41,7 +41,7 @@ public class UserResource {
         return ResponseEntity.created(new URI("/api/users" + result.getId())).body(result);
     }
 
-    @GetMapping("/users")
+    @GetMapping("/me")
     public ResponseEntity<UserDTO> getUser() throws URISyntaxException {
         log.debug("REST request to get User");
 

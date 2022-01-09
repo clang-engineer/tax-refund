@@ -23,7 +23,7 @@ import javax.validation.Valid;
 import java.net.URLEncoder;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/szs")
 public class UserJWTController {
 
     private final TokenProvider tokenProvider;
@@ -38,7 +38,7 @@ public class UserJWTController {
         this.applicationProperties = applicationProperties;
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity<JWTToken> authorize(@Valid @RequestBody LoginVM loginVM, HttpServletResponse response) throws Exception {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginVM.getUserId(), loginVM.getPassword()
