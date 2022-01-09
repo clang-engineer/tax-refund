@@ -45,7 +45,7 @@ class UserJWTControllerIT {
         login.setPassword("test1234");
 
         mockMvc
-                .perform(post("/api/authenticate")
+                .perform(post("/szs/login")
                         .contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(login)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id_token").isString())
@@ -61,7 +61,7 @@ class UserJWTControllerIT {
         login.setUserId("wrong-userid");
         login.setPassword("wrong password");
         mockMvc
-                .perform(post("/api/authenticate").contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(login)))
+                .perform(post("/szs/login").contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(login)))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.id_token").doesNotExist())
                 .andExpect(header().doesNotExist("Authorization"));
