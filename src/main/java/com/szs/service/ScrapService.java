@@ -63,6 +63,11 @@ public class ScrapService {
         HashMap jsonList = (HashMap) externalJson.get("jsonList");
         Map scrap001 = (HashMap) ((ArrayList) jsonList.get("scrap001")).get(0);
         Map scrap002 = (HashMap) ((ArrayList) jsonList.get("scrap002")).get(0);
+
+        if (scrap001 == null || scrap002 == null) {
+            return null;
+        }
+
         Scrap result = new Scrap()
                 .appVer((String) externalJson.get("appVer"))
                 .hostNm((String) externalJson.get("hostNm"))
