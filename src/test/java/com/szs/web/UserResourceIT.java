@@ -65,7 +65,7 @@ public class UserResourceIT {
         int databaseSizeBeforeCreate = userRepository.findAll().size();
 
         restUserMockMvc
-                .perform(post("/api/users")
+                .perform(post("/szs/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtil.convertObjectToJsonBytes(user)))
                 .andExpect(status().isCreated());
@@ -80,7 +80,7 @@ public class UserResourceIT {
 
         // Get the user
         restUserMockMvc
-                .perform(get("/api/users"))
+                .perform(get("/szs/me"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.userId").value(user.getUserId()))
