@@ -28,7 +28,7 @@
 - path: /szs/scrap
 - param: x
 - 인증 토큰을 이용하여 본인 정보만 확인하도록 구성하였습니다.
-- 스크랩 정보를 저장하기 위해 tbl_scrap, tbl_scrap_salary, tbl_scrap_tax 로 테이블을 구성하였습니다.
+- 스크랩 정보를 저장하기 위해 tbl_scrap, tbl_scrap_salary(scrap001), tbl_scrap_tax(scrap002) 로 테이블을 구성하였습니다.
 - jpa ScrapSalary to Scrap(N:1), ScrapTax to Scrap(N:1)의 연관 관계를 각각 형성하였습니다.
 - 로컬 database에 스크랩한 정보가 있으면 바로 응답, 아니면 스크랩 api를 호출하도록 구성하였습니다.
 - 최초 회원 가입시 스크랩URL을 별도 스레드에서 1회 호출하도록 구성하였습니다.
