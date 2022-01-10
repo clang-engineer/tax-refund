@@ -10,14 +10,14 @@
             </column>
             <column name="title" type="varchar(200)"/>
             <column name="total" type="bigint"/>
-            <column name="company" type="varchar(200)"/>
-            <column name="name" type="varchar(200)"/>
-            <column name="regNo" type="varchar(200)"/>
+            <column name="company_name" type="varchar(200)"/>
+            <column name="user_name" type="varchar(200)"/>
+            <column name="reg_no" type="varchar(200)"/>
             <column name="category" type="varchar(200)"/>
-            <column name="companyNo" type="varchar(200)"/>
-            <column name="startDate" type="timestamp"/>
-            <column name="payDate" type="timestamp"/>
-            <column name="endDate" type="timestamp"/>
+            <column name="company_no" type="varchar(200)"/>
+            <column name="start_date" type="timestamp"/>
+            <column name="pay_date" type="timestamp"/>
+            <column name="end_date" type="timestamp"/>
             <column name="scrap_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
