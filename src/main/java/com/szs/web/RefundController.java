@@ -1,11 +1,13 @@
 package com.szs.web;
 
 import com.szs.config.Constants;
-import com.szs.domain.Scrap;
+import com.szs.domain.ScrapSalary;
+import com.szs.domain.ScrapTax;
 import com.szs.domain.User;
 import com.szs.repository.UserRepository;
 import com.szs.security.SecurityUtils;
 import com.szs.service.ScrapService;
+import com.szs.service.dto.ScrapDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -44,10 +46,10 @@ public class RefundController {
 
         result.put("이름", username);
 
-        Scrap scrap = scrapService.getScrapInfo().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        ScrapDTO scrap = scrapService.getScrapInfo().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
-        int limitedMoney = getLimitedMoney(Integer.parseInt(scrap.getScrap001().get("총지급액")));
-        int deductedMoney = getDeductedMoney(Integer.parseInt(scrap.getScrap002().get("총사용금액")));
+        int limitedMoney = getLimitedMoney(scrap.getScrapSalaryList().stream().map(ScrapSalary::getTotal).reduce(0, Integer::sum));
+        int deductedMoney = getDeductedMoney(scrap.getScrapTaxList().stream().map(ScrapTax::getTotal).reduce(0, Integer::sum));
         int refundMoney = Math.min(limitedMoney, deductedMoney);
 
         result.put("한도", getFormattedMoney(limitedMoney));

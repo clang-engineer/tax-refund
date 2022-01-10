@@ -1,7 +1,7 @@
 package com.szs.web;
 
-import com.szs.domain.Scrap;
 import com.szs.service.ScrapService;
+import com.szs.service.dto.ScrapDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class ScrapResource {
 
 
     @GetMapping("/scrap")
-    public ResponseEntity<Scrap> getScrap() throws Exception {
+    public ResponseEntity<ScrapDTO> getScrap() throws Exception {
         log.debug("REST request to get scrap");
 
         return scrapService.getScrapInfo()
