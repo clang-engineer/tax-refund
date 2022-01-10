@@ -119,7 +119,7 @@ public class ScrapService {
         SimpleDateFormat tranFormat = new SimpleDateFormat("yyyy.mm.dd");
         ScrapSalary scrappedSalary = new ScrapSalary()
                 .title((String) salaryInfo.get("소득내역"))
-                .total((Integer) salaryInfo.get("총지급액"))
+                .total(getCastedMoney(salaryInfo.get("총지급액")))
                 .companyName((String) salaryInfo.get("기업명"))
                 .userName((String) salaryInfo.get("이름"))
                 .regNo(AES256Utils.encrypt((String) salaryInfo.get("주민등록번호")))
@@ -129,15 +129,24 @@ public class ScrapService {
                 .endDate(tranFormat.parse((String) salaryInfo.get("업무종료일")))
                 .payDate(tranFormat.parse((String) salaryInfo.get("지급일")))
                 .scrap(scrap);
+
         return scrapSalaryRepository.save(scrappedSalary);
     }
 
     private ScrapTax saveScrappedTax(Scrap scrap, HashMap<String, Object> taxInfo) {
         ScrapTax scrappedTax = new ScrapTax()
                 .title((String) taxInfo.get("소득구분"))
-                .total((Integer) taxInfo.get("총사용금액"))
+                .total(getCastedMoney(taxInfo.get("총사용금액")))
                 .scrap(scrap);
         return scrapTaxRepository.save(scrappedTax);
+    }
+
+    private Integer getCastedMoney(Object money) {
+        if (money instanceof String) {
+            return Integer.valueOf((String) money);
+        } else {
+            return (Integer) money;
+        }
     }
 
     @Scheduled(cron = "0 0 1 * * ?")
