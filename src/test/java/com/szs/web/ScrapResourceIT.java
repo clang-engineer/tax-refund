@@ -16,10 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.hasValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -34,8 +31,6 @@ class ScrapResourceIT {
     private static final String DEFAULT_USER_ID = "AAAAAAAAA";
     private static final LocalDateTime DEFAULT_WORKER_RES_DT = LocalDateTime.now();
     private static final LocalDateTime DEFAULT_WORKER_REQ_DT = LocalDateTime.now();
-    private static final Map DEFAULT_SCRAP_001 = Map.of("key1-1", "value1-1", "key1-2", "value1-2");
-    private static final Map DEFAULT_SCRAP_002 = Map.of("key2-1", "value2-1", "key2-2", "value2-2");
 
     @Autowired
     private UserRepository userRepository;
@@ -63,9 +58,7 @@ class ScrapResourceIT {
                 .svcCd(DEFAULT_SVC_CD)
                 .userId(DEFAULT_USER_ID)
                 .workerResDt(DEFAULT_WORKER_RES_DT)
-                .workerReqDt(DEFAULT_WORKER_REQ_DT)
-                .scrap001(DEFAULT_SCRAP_001)
-                .scrap002(DEFAULT_SCRAP_002);
+                .workerReqDt(DEFAULT_WORKER_REQ_DT);
         return scrap;
     }
 
@@ -94,10 +87,6 @@ class ScrapResourceIT {
                 .andExpect(jsonPath("$.company").value(scrap.getCompany()))
                 .andExpect(jsonPath("$.svcCd").value(scrap.getSvcCd()))
                 .andExpect(jsonPath("$.userId").value(scrap.getUserId()))
-                .andExpect(jsonPath("$.scrap001").value(hasKey("key1-1")))
-                .andExpect(jsonPath("$.scrap001").value(hasKey("key1-2")))
-                .andExpect(jsonPath("$.scrap001").value(hasValue("value1-1")))
-                .andExpect(jsonPath("$.scrap001").value(hasValue("value1-2")))
         ;
 
     }

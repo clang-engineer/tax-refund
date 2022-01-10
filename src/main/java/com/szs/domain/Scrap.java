@@ -3,8 +3,6 @@ package com.szs.domain;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Entity
 @Table(name = "tbl_scrap")
@@ -38,18 +36,6 @@ public class Scrap implements Serializable {
 
     @Column(name = "worker_req_dt")
     private LocalDateTime workerReqDt;
-
-    @ElementCollection
-    @CollectionTable(name = "tbl_scrap_001", joinColumns = @JoinColumn(name = "scrap_id"))
-    @MapKeyColumn(name = "json_key")
-    @Column(name = "json_value")
-    private Map<String, String> scrap001 = new HashMap<>();
-
-    @ElementCollection
-    @CollectionTable(name = "tbl_scrap_002", joinColumns = @JoinColumn(name = "scrap_id"))
-    @MapKeyColumn(name = "json_key")
-    @Column(name = "json_value")
-    private Map<String, String> scrap002 = new HashMap<>();
 
     public Long getId() {
         return id;
@@ -165,32 +151,6 @@ public class Scrap implements Serializable {
 
     public Scrap workerReqDt(LocalDateTime workerReqDt) {
         this.workerReqDt = workerReqDt;
-        return this;
-    }
-
-    public Map<String, String> getScrap001() {
-        return scrap001;
-    }
-
-    public void setScrap001(Map<String, String> scrap001) {
-        this.scrap001 = scrap001;
-    }
-
-    public Scrap scrap001(Map<String, String> scrap001) {
-        this.scrap001 = scrap001;
-        return this;
-    }
-
-    public Map<String, String> getScrap002() {
-        return scrap002;
-    }
-
-    public void setScrap002(Map<String, String> scrap002) {
-        this.scrap002 = scrap002;
-    }
-
-    public Scrap scrap002(Map<String, String> scrap002) {
-        this.scrap002 = scrap002;
         return this;
     }
 
