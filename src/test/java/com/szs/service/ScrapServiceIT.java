@@ -124,10 +124,12 @@ public class ScrapServiceIT {
         scrapSalaryRepository.saveAndFlush(scrapSalary.scrap(scrap));
         scrapTaxRepository.saveAndFlush(scrapTax.scrap(scrap));
 
-        Optional<ScrapDTO> scrap = scrapService.getScrapInfo();
+        Optional<ScrapDTO> scrapDTO = scrapService.getScrapInfo();
 
-        assertThat(scrap).isPresent();
-        assertThat(scrap.orElse(null).getAppVer()).isEqualTo(DEFAULT_APP_VER);
+        assertThat(scrapDTO).isPresent();
+        assertThat(scrapDTO.orElse(null).getAppVer()).isEqualTo(DEFAULT_APP_VER);
+        assertThat(scrapDTO.orElse(null).getScrapSalaryList().get(0)).isEqualTo(scrapSalary);
+        assertThat(scrapDTO.orElse(null).getScrapTaxList().get(0)).isEqualTo(scrapTax);
 
     }
 

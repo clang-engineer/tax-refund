@@ -3,16 +3,15 @@ package com.szs.service.dto;
 import com.szs.domain.Scrap;
 import com.szs.domain.ScrapSalary;
 import com.szs.domain.ScrapTax;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScrapDTO  {

@@ -53,13 +53,20 @@ public class ScrapService {
         log.debug("Get current user scrap info");
 
         User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).orElseThrow(() -> new Exception());
-        Optional<ScrapDTO> scrapInDB = scrapRepository.findOneByUserId(user.getUserId()).map(ScrapDTO::new);
+        Optional<ScrapDTO> scrapDTO = scrapRepository.findOneByUserId(user.getUserId()).map(ScrapDTO::new).map(data -> {
+            List<ScrapSalary> scrapSalaryList = scrapSalaryRepository.findAllByScrapId(data.getId());
+            data.setScrapSalaryList(scrapSalaryList);
+            List<ScrapTax> scrapTaxList = scrapTaxRepository.findAllByScrapId(data.getId());
+            data.setScrapTaxList(scrapTaxList);
 
-        if (scrapInDB.isEmpty()) {
-            scrapInDB = saveScrapInfo(user.getName(), AES256Utils.decrypt(user.getRegNo()));
+            return data;
+        });
+
+        if (scrapDTO.isEmpty()) {
+            scrapDTO = saveScrapInfo(user.getName(), AES256Utils.decrypt(user.getRegNo()));
         }
 
-        return scrapInDB;
+        return scrapDTO;
     }
 
 
