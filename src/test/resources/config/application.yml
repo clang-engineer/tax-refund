@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: TaxRefundApp
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:h2:mem:szs-test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: young-jun
+    password:
+    driver-class-name: org.h2.Driver
+
+server:
+  port: 8080
+
+application:
+  security:
+    authentication:
+      jwt:
+        base64-secret: NzdlZGZjZWU5Y2MwYTM4MWFmYmVjNmIzZTY2YzllZmJjODE1NGM4YmQ1N2ZkMjg0ZmRjNmZlNzEzNzBkNDUzNGExYjdlZTdkZDkwODI2NjZiNDFhYjk5ZTIxMzJjNzJkM2ZmZTA1MTBkNWQ0YWNlNmYyMDM2OGY2YzQ2NzkyMjg=
+        token-validity-in-seconds: 86400
