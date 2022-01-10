@@ -154,7 +154,7 @@ public class ScrapServiceIT {
 
         Optional<Scrap> scrap = scrapRepository.findOneByUserId("1");
 
-        assertThat(scrap.orElse(null).getUserId()).isEqualTo("1");
+        assertThat(scrap).isPresent();
     }
 
 }
