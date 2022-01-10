@@ -41,10 +41,6 @@ public class UserResource {
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws Exception {
         log.debug("REST request to save User: {}", userDTO);
 
-        if (userDTO.getId() != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-
         User user = new User(userDTO);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
