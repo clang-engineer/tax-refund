@@ -23,7 +23,7 @@ class ExceptionTranslatorIT {
     @Test
     void testUnauthorized() throws Exception {
         mockMvc
-                .perform(get("/api/exception-translator-test/unauthorized"))
+                .perform(get("/api/exception-translator-test/user-info-not-found"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value("Not Authorized"))

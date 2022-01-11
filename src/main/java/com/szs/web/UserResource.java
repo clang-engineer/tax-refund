@@ -5,7 +5,7 @@ import com.szs.repository.UserRepository;
 import com.szs.security.SecurityUtils;
 import com.szs.service.ScrapService;
 import com.szs.service.dto.UserDTO;
-import com.szs.web.errors.UnAuthorizedException;
+import com.szs.web.errors.UserInfoNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +63,7 @@ public class UserResource {
     public ResponseEntity<UserDTO> getUser() throws Exception {
         log.debug("REST request to get User");
 
-        UserDTO userDTO = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).map(UserDTO::new).orElseThrow(() -> new UnAuthorizedException());
+        UserDTO userDTO = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).map(UserDTO::new).orElseThrow(() -> new UserInfoNotFoundException());
         userDTO.setRegNo(AES256Utils.decrypt(userDTO.getRegNo()));
 
         return ResponseEntity.ok(userDTO);

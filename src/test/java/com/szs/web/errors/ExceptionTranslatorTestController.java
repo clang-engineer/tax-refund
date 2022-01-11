@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/exception-translator-test")
 public class ExceptionTranslatorTestController {
 
-    @GetMapping("/unauthorized")
-    public void unauthorized() {
-        throw new UnAuthorizedException();
+    @GetMapping("/user-info-not-found")
+    public void userInfoNotFoundException() {
+        throw new UserInfoNotFoundException();
     }
 
     @GetMapping("/scrap-not-found")

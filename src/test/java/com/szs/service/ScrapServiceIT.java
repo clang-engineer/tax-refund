@@ -13,7 +13,7 @@ import com.szs.service.dto.ScrapDTO;
 import com.szs.web.TestUtil;
 import com.szs.web.UserResourceIT;
 import com.szs.web.errors.ScrapNotFoundException;
-import com.szs.web.errors.UnAuthorizedException;
+import com.szs.web.errors.UserInfoNotFoundException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -142,7 +142,7 @@ public class ScrapServiceIT {
     @Test
     @Transactional
     void getScrapInfoUnAuthorizedException() throws Exception {
-        assertThrows(UnAuthorizedException.class, () -> scrapService.getScrapInfo());
+        assertThrows(UserInfoNotFoundException.class, () -> scrapService.getScrapInfo());
     }
 
     @Test

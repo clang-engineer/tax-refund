@@ -16,7 +16,7 @@ public class ExceptionTranslator {
         this.env = env;
     }
 
-    @ExceptionHandler({BadCredentialsException.class, UnAuthorizedException.class})
+    @ExceptionHandler({BadCredentialsException.class, UserInfoNotFoundException.class})
     public ResponseEntity<ErrorDTO> handleUnAuthorizedException() {
         ErrorDTO errorDTO = new ErrorDTO("Not Authorized", "authorized user session not found", HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(errorDTO, HttpStatus.UNAUTHORIZED);
