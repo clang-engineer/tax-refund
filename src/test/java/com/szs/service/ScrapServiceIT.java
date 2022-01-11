@@ -11,9 +11,11 @@ import com.szs.repository.ScrapTaxRepository;
 import com.szs.repository.UserRepository;
 import com.szs.service.dto.ScrapDTO;
 import com.szs.web.AES256Utils;
+import com.szs.web.TestUtil;
 import com.szs.web.UserResourceIT;
 import com.szs.web.errors.ScrapNotFoundException;
 import com.szs.web.errors.UnAuthorizedException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -78,6 +80,12 @@ public class ScrapServiceIT {
 
     private ScrapTax scrapTax;
 
+    private JSONObject jsonObject;
+
+    RestTemplate restTemplate;
+    private ArgumentCaptor<String> postUrlCapture;
+    private ArgumentCaptor<Map> postParamCapture;
+
     public static Scrap createEntity() {
         Scrap scrap = new Scrap()
                 .appVer(DEFAULT_APP_VER)
@@ -121,6 +129,10 @@ public class ScrapServiceIT {
         scrap = createEntity();
         scrapSalary = createScrapSalary();
         scrapTax = createScrapTax();
+
+        restTemplate = mock(RestTemplate.class);
+        postUrlCapture = ArgumentCaptor.forClass(String.class);
+        postParamCapture = ArgumentCaptor.forClass(Map.class);
     }
 
     @Test
@@ -150,16 +162,31 @@ public class ScrapServiceIT {
     @Test
     @Transactional
     void testSaveScarpInfoScrapNotFoundException() throws Exception {
-        RestTemplate restTemplate = mock(RestTemplate.class);
-        ArgumentCaptor<String> postUrlCapture = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Map> postParamCapture = ArgumentCaptor.forClass(Map.class);
         when(restTemplate.postForObject(postUrlCapture.capture(), postParamCapture.capture(), eq(Map.class))).thenReturn(null);
         scrapService.setRestTemplate(restTemplate);
-
 
         assertThrows(ScrapNotFoundException.class, () -> {
             scrapService.saveScrapInfo(DEFAULT_USER_ID, UserResourceIT.createEntity().getRegNo());
         });
+    }
+
+    @Test
+    @Transactional
+    void testSaveScrapInfo() throws Exception {
+        userRepository.saveAndFlush(user);
+
+        JSONObject jsonObject = TestUtil.createScrapJSONObject();
+        jsonObject.getJSONObject("jsonList").put("userId", DEFAULT_USER_ID);
+
+        when(restTemplate.postForObject(postUrlCapture.capture(), postParamCapture.capture(), eq(Map.class))).thenReturn(TestUtil.getMapFromJsonObject(jsonObject));
+        scrapService.setRestTemplate(restTemplate);
+
+        scrapService.saveScrapInfo(DEFAULT_USER_ID, UserResourceIT.createEntity().getRegNo());
+
+        Scrap scrap = scrapRepository.findOneByUserId(DEFAULT_USER_ID).orElseThrow(() -> new Exception());
+        assertThat(scrap).isNotNull();
+        assertThat(scrapTaxRepository.findAllByScrapId(scrap.getId())).isNotEmpty();
+        assertThat(scrapSalaryRepository.findAllByScrapId(scrap.getId())).isNotEmpty();
     }
 
     @Test
