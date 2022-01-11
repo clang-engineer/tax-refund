@@ -4,6 +4,7 @@ import com.szs.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +28,7 @@ class ExceptionTranslatorIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value("Not Authorized"))
                 .andExpect(jsonPath("$.description").value("authorized user session not found"))
-                .andExpect(jsonPath("$.status").value(401));
+                .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()));
     }
 
     @Test
@@ -38,7 +39,18 @@ class ExceptionTranslatorIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value("Scrap Not Found"))
                 .andExpect(jsonPath("$.description").value("can't find scrap info"))
-                .andExpect(jsonPath("$.status").value(403));
+                .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()));
+    }
+
+    @Test
+    void testScrapSaveFail() throws Exception {
+        mockMvc
+                .perform(get("/api/exception-translator-test/scrap-save-fail"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.title").value("Scrap Save Fail"))
+                .andExpect(jsonPath("$.description").value("can't save scrap info"))
+                .andExpect(jsonPath("$.status").value(HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 
     @Test
@@ -49,7 +61,7 @@ class ExceptionTranslatorIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value("Internal Server Error"))
                 .andExpect(jsonPath("$.description").value(""))
-                .andExpect(jsonPath("$.status").value(500));
+                .andExpect(jsonPath("$.status").value(HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 
 

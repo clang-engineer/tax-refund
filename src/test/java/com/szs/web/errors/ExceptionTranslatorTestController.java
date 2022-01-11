@@ -18,6 +18,11 @@ public class ExceptionTranslatorTestController {
         throw new ScrapNotFoundException();
     }
 
+    @GetMapping("/scrap-save-fail")
+    public void scrapSaveFailException() {
+        throw new ScrapSaveFailException();
+    }
+
     @GetMapping("/internal-server-error")
     public void internalServerError() {
         throw new RuntimeException();

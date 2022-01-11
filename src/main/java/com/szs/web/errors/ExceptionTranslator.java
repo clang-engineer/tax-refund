@@ -28,6 +28,12 @@ public class ExceptionTranslator {
     }
 
     @ExceptionHandler
+    public ResponseEntity<ErrorDTO> handleScrapSaveFailException(ScrapSaveFailException ex) {
+        ErrorDTO errorDTO = new ErrorDTO("Scrap Save Fail", "can't save scrap info", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<ErrorDTO> handleGlobalException(Exception ex) {
         ErrorDTO errorDTO = new ErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
