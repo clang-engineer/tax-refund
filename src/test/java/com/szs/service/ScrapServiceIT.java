@@ -30,10 +30,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @IntegrationTest
 @Transactional
@@ -181,18 +179,15 @@ public class ScrapServiceIT {
     @Transactional
     @WithMockUser(DEFAULT_USER_ID)
     void assertThatScrappingScheduledIn24Hours() throws Exception {
-        userRepository.saveAndFlush(user);
+        userRepository = mock(UserRepository.class);
+        scrapRepository = mock(ScrapRepository.class);
 
-        JSONObject jsonObject = TestUtil.createScrapJSONObject();
-        jsonObject.getJSONObject("jsonList").put("userId", DEFAULT_USER_ID);
-
-        when(scrapService.saveScrapInfo(anyString(), anyString())).thenReturn(null);
+        scrapService = new ScrapService(userRepository, scrapRepository, scrapSalaryRepository, scrapTaxRepository);
 
         scrapService.executeScrapping();
 
-        Optional<Scrap> scrap = scrapRepository.findOneByUserId(DEFAULT_USER_ID);
-
-        assertThat(scrap).isPresent();
+        verify(scrapRepository, times(1)).findAll();
+        verify(userRepository, times(1)).findAll();
     }
 
 }
