@@ -10,6 +10,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WithMockUser
@@ -19,6 +20,17 @@ class ExceptionTranslatorIT {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Test
+    void testMethodArgumentNotValid() throws Exception {
+        mockMvc
+                .perform(post("/api/exception-translator-test/method-argument").content("{}").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.title").value("Method Argument Not Valid"))
+                .andExpect(jsonPath("$.description").value("method argument not valid"))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()));
+    }
 
     @Test
     void testAccessDenied() throws Exception {

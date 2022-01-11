@@ -2,13 +2,30 @@ package com.szs.web.errors;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/api/exception-translator-test")
 public class ExceptionTranslatorTestController {
+    @PostMapping("/method-argument")
+    public void methodArgument(@Valid @RequestBody TestDTO testDTO) {}
+
+    public static class TestDTO {
+
+        @NotNull
+        private String test;
+
+        public String getTest() {
+            return test;
+        }
+
+        public void setTest(String test) {
+            this.test = test;
+        }
+    }
 
     @GetMapping("/access-denied")
     public void accessdenied() {
