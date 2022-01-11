@@ -3,6 +3,7 @@ package com.szs.web.errors;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -15,8 +16,8 @@ public class ExceptionTranslator {
         this.env = env;
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorDTO> handleUnAuthorizedException(UnAuthorizedException ex) {
+    @ExceptionHandler({BadCredentialsException.class, UnAuthorizedException.class})
+    public ResponseEntity<ErrorDTO> handleUnAuthorizedException() {
         ErrorDTO errorDTO = new ErrorDTO("Not Authorized", "authorized user session not found", HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(errorDTO, HttpStatus.UNAUTHORIZED);
     }
