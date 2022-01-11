@@ -12,6 +12,7 @@ import com.szs.security.SecurityUtils;
 import com.szs.service.dto.ScrapDTO;
 import com.szs.web.AES256Utils;
 import com.szs.web.errors.ScrapNotFoundException;
+import com.szs.web.errors.ScrapSaveFailException;
 import com.szs.web.errors.UnAuthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,38 +76,43 @@ public class ScrapService {
         return scrapDTO;
     }
 
-
     public Optional<ScrapDTO> saveScrapInfo(String name, String regNo) {
         log.debug("Save current user scrap info from external network");
+        try {
+            Map map = Map.of("name", name, "regNo", regNo);
 
-        Map map = Map.of("name", name, "regNo", regNo);
-        HashMap externalScrapInfo = (HashMap) this.restTemplate.postForObject("https://codetest.3o3.co.kr/scrap/", map, Map.class);
+            HashMap externalScrapInfo = (HashMap) this.restTemplate.postForObject("https://codetest.3o3.co.kr/scrap/", map, Map.class);
 
-        if (externalScrapInfo == null || externalScrapInfo.size() <= 1) {
+            if (externalScrapInfo == null || externalScrapInfo.size() <= 1) {
+                throw new ScrapNotFoundException();
+            }
+
+            Scrap scrap = saveScrap(externalScrapInfo);
+
+            List salaryList = (List) ((HashMap) externalScrapInfo.get("jsonList")).get("scrap001");
+            List taxList = (List) ((HashMap) externalScrapInfo.get("jsonList")).get("scrap002");
+
+            List<ScrapSalary> scrapSalaryList = new ArrayList();
+            List<ScrapTax> scrapTaxList = new ArrayList();
+            salaryList.forEach(salaryInfo -> {
+                ScrapSalary scrapSalary = saveScrappedSalary(scrap, (HashMap<String, Object>) salaryInfo);
+                scrapSalaryList.add(scrapSalary);
+            });
+
+            taxList.forEach(taxInfo -> {
+                ScrapTax scrapTax = saveScrappedTax(scrap, (HashMap<String, Object>) taxInfo);
+                scrapTaxList.add(scrapTax);
+            });
+
+            ScrapDTO scrapDTO = new ScrapDTO(scrap);
+            scrapDTO.setScrapSalaryList(scrapSalaryList);
+            scrapDTO.setScrapTaxList(scrapTaxList);
+            return Optional.of(scrapDTO);
+        } catch (ScrapNotFoundException e) {
             throw new ScrapNotFoundException();
+        } catch (Exception e) {
+            throw new ScrapSaveFailException();
         }
-
-        Scrap scrap = saveScrap(externalScrapInfo);
-
-        List salaryList = (List) ((HashMap) externalScrapInfo.get("jsonList")).get("scrap001");
-        List taxList = (List) ((HashMap) externalScrapInfo.get("jsonList")).get("scrap002");
-
-        List<ScrapSalary> scrapSalaryList = new ArrayList();
-        List<ScrapTax> scrapTaxList = new ArrayList();
-        salaryList.forEach(salaryInfo -> {
-            ScrapSalary scrapSalary = saveScrappedSalary(scrap, (HashMap<String, Object>) salaryInfo);
-            scrapSalaryList.add(scrapSalary);
-        });
-
-        taxList.forEach(taxInfo -> {
-            ScrapTax scrapTax = saveScrappedTax(scrap, (HashMap<String, Object>) taxInfo);
-            scrapTaxList.add(scrapTax);
-        });
-
-        ScrapDTO scrapDTO = new ScrapDTO(scrap);
-        scrapDTO.setScrapSalaryList(scrapSalaryList);
-        scrapDTO.setScrapTaxList(scrapTaxList);
-        return Optional.of(scrapDTO);
     }
 
     private Scrap saveScrap(HashMap externalJson) {
