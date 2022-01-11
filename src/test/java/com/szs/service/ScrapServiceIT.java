@@ -12,17 +12,26 @@ import com.szs.repository.UserRepository;
 import com.szs.service.dto.ScrapDTO;
 import com.szs.web.AES256Utils;
 import com.szs.web.UserResourceIT;
+import com.szs.web.errors.ScrapNotFoundException;
+import com.szs.web.errors.UnAuthorizedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @IntegrationTest
 @Transactional
@@ -117,7 +126,7 @@ public class ScrapServiceIT {
     @Test
     @Transactional
     @WithMockUser(DEFAULT_USER_ID)
-    void getScrapFromLocalNetwork() throws Exception {
+    void getScrapInfoInLocalNetwork() throws Exception {
 
         userRepository.saveAndFlush(user);
         scrapRepository.saveAndFlush(scrap);
@@ -130,19 +139,27 @@ public class ScrapServiceIT {
         assertThat(scrapDTO.orElse(null).getAppVer()).isEqualTo(DEFAULT_APP_VER);
         assertThat(scrapDTO.orElse(null).getScrapSalaryList().get(0)).isEqualTo(scrapSalary);
         assertThat(scrapDTO.orElse(null).getScrapTaxList().get(0)).isEqualTo(scrapTax);
-
     }
 
     @Test
     @Transactional
-    @WithMockUser(HONG_GIL_DONG_USER_ID)
-    void getScrapFromExternalNetwork() throws Exception {
+    void getScrapInfoUnAuthorizedException() throws Exception {
+        assertThrows(UnAuthorizedException.class, () -> scrapService.getScrapInfo());
+    }
 
-        saveHongGilDongLocally();
-        Optional<ScrapDTO> scrap = scrapService.getScrapInfo();
+    @Test
+    @Transactional
+    void testSaveScarpInfoScrapNotFoundException() throws Exception {
+        RestTemplate restTemplate = mock(RestTemplate.class);
+        ArgumentCaptor<String> postUrlCapture = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Map> postParamCapture = ArgumentCaptor.forClass(Map.class);
+        when(restTemplate.postForObject(postUrlCapture.capture(), postParamCapture.capture(), eq(Map.class))).thenReturn(null);
+        scrapService.setRestTemplate(restTemplate);
 
-        assertThat(scrap).isPresent();
-        assertThat(scrap.orElse(null).getUserId()).isEqualTo("1");
+
+        assertThrows(ScrapNotFoundException.class, () -> {
+            scrapService.saveScrapInfo(DEFAULT_USER_ID, UserResourceIT.createEntity().getRegNo());
+        });
     }
 
     @Test

@@ -12,6 +12,7 @@ import com.szs.security.SecurityUtils;
 import com.szs.service.dto.ScrapDTO;
 import com.szs.web.AES256Utils;
 import com.szs.web.errors.ScrapNotFoundException;
+import com.szs.web.errors.UnAuthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -50,10 +51,14 @@ public class ScrapService {
         this.scrapTaxRepository = scrapTaxRepository;
     }
 
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
     public Optional<ScrapDTO> getScrapInfo() throws Exception {
         log.debug("Get current user scrap info");
 
-        User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).orElseThrow(() -> new Exception());
+        User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).orElseThrow(() -> new UnAuthorizedException());
         Optional<ScrapDTO> scrapDTO = scrapRepository.findOneByUserId(user.getUserId()).map(ScrapDTO::new).map(data -> {
             List<ScrapSalary> scrapSalaryList = scrapSalaryRepository.findAllByScrapId(data.getId());
             data.setScrapSalaryList(scrapSalaryList);
