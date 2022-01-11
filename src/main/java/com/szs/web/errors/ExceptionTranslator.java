@@ -3,6 +3,7 @@ package com.szs.web.errors;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,12 @@ public class ExceptionTranslator {
 
     public ExceptionTranslator(Environment env) {
         this.env = env;
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorDTO> handleAccessDeniedException(AccessDeniedException ex) {
+        ErrorDTO errorDTO = new ErrorDTO("Access Denied", "access denied", HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(errorDTO, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler({BadCredentialsException.class, UserInfoNotFoundException.class})

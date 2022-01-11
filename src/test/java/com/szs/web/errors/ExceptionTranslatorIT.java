@@ -21,7 +21,29 @@ class ExceptionTranslatorIT {
     private MockMvc mockMvc;
 
     @Test
+    void testAccessDenied() throws Exception {
+        mockMvc
+                .perform(get("/api/exception-translator-test/access-denied"))
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.title").value("Access Denied"))
+                .andExpect(jsonPath("$.description").value("access denied"))
+                .andExpect(jsonPath("$.status").value(HttpStatus.FORBIDDEN.value()));
+    }
+
+    @Test
     void testUnauthorized() throws Exception {
+        mockMvc
+                .perform(get("/api/exception-translator-test/unauthorized"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.title").value("Not Authorized"))
+                .andExpect(jsonPath("$.description").value("authorized user session not found"))
+                .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()));
+    }
+
+    @Test
+    void testUserNotFound() throws Exception {
         mockMvc
                 .perform(get("/api/exception-translator-test/user-info-not-found"))
                 .andExpect(status().isUnauthorized())
