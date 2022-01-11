@@ -11,6 +11,7 @@ import com.szs.repository.UserRepository;
 import com.szs.security.SecurityUtils;
 import com.szs.service.dto.ScrapDTO;
 import com.szs.web.AES256Utils;
+import com.szs.web.errors.ScrapNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -77,7 +78,7 @@ public class ScrapService {
         HashMap externalScrapInfo = (HashMap) this.restTemplate.postForObject("https://codetest.3o3.co.kr/scrap/", map, Map.class);
 
         if (externalScrapInfo.size() <= 1) {
-            return null;
+            throw new ScrapNotFoundException();
         }
 
         Scrap scrap = saveScrap(externalScrapInfo);
