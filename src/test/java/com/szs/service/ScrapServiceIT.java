@@ -150,7 +150,7 @@ public class ScrapServiceIT {
     void assertThatScrappingScheduledIn24Hours() throws Exception {
 
         saveHongGilDongLocally();
-        scrapService.excuteScrapping();
+        scrapService.executeScrapping();
 
         Optional<Scrap> scrap = scrapRepository.findOneByUserId("1");
 

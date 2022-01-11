@@ -157,8 +157,8 @@ public class ScrapService {
     }
 
     @Scheduled(cron = "0 0 1 * * ?")
-    void excuteScrapping() {
-        log.debug("Excute daily scrap schedule");
+    void executeScrapping() {
+        log.debug("Execute daily scrap schedule {}", LocalDateTime.now());
 
         List<String> scrappedUserId = scrapRepository.findAll().stream().map(Scrap::getUserId).collect(Collectors.toList());
         userRepository.findAll().stream()
