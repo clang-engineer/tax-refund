@@ -10,7 +10,6 @@ import com.szs.repository.ScrapSalaryRepository;
 import com.szs.repository.ScrapTaxRepository;
 import com.szs.repository.UserRepository;
 import com.szs.service.dto.ScrapDTO;
-import com.szs.web.AES256Utils;
 import com.szs.web.TestUtil;
 import com.szs.web.UserResourceIT;
 import com.szs.web.errors.ScrapNotFoundException;
@@ -31,6 +30,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -46,10 +46,6 @@ public class ScrapServiceIT {
     private static final String DEFAULT_USER_ID = "AAAAAAAAA";
     private static final LocalDateTime DEFAULT_WORKER_RES_DT = LocalDateTime.now();
     private static final LocalDateTime DEFAULT_WORKER_REQ_DT = LocalDateTime.now();
-
-    public static final String HONG_GIL_DONG_USER_ID = "1";
-    public static final String HONG_GIL_DONG_NAME = "홍길동";
-    public static final String HONG_GIL_DONG_REG_NO = "860824-1655068";
 
     public static final String DEFAULT_SCRAP_SALARY_TITLE = "AAAAAAAA";
     public static final Integer DEFAULT_SCRAP_SALARY_TOTAL = 3234000;
@@ -111,14 +107,6 @@ public class ScrapServiceIT {
                 .title(DEFAULT_SCRAP_SALARY_TITLE)
                 .total(DEFAULT_SCRAP_SALARY_TOTAL);
         return scrapTax;
-    }
-
-    public void saveHongGilDongLocally() throws Exception {
-        user.setUserId(HONG_GIL_DONG_USER_ID);
-        user.setName(HONG_GIL_DONG_NAME);
-        user.setRegNo(AES256Utils.encrypt(HONG_GIL_DONG_REG_NO));
-
-        userRepository.saveAndFlush(user);
     }
 
     @BeforeEach
@@ -191,12 +179,18 @@ public class ScrapServiceIT {
 
     @Test
     @Transactional
+    @WithMockUser(DEFAULT_USER_ID)
     void assertThatScrappingScheduledIn24Hours() throws Exception {
+        userRepository.saveAndFlush(user);
 
-        saveHongGilDongLocally();
+        JSONObject jsonObject = TestUtil.createScrapJSONObject();
+        jsonObject.getJSONObject("jsonList").put("userId", DEFAULT_USER_ID);
+
+        when(scrapService.saveScrapInfo(anyString(), anyString())).thenReturn(null);
+
         scrapService.executeScrapping();
 
-        Optional<Scrap> scrap = scrapRepository.findOneByUserId("1");
+        Optional<Scrap> scrap = scrapRepository.findOneByUserId(DEFAULT_USER_ID);
 
         assertThat(scrap).isPresent();
     }

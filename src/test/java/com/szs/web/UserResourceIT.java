@@ -1,11 +1,9 @@
 package com.szs.web;
 
 import com.szs.IntegrationTest;
-import com.szs.domain.Scrap;
 import com.szs.domain.User;
 import com.szs.repository.ScrapRepository;
 import com.szs.repository.UserRepository;
-import com.szs.service.ScrapServiceIT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -91,20 +88,20 @@ public class UserResourceIT {
 
 //    @Test
 //    @Transactional
-    void creatUserWithAsyncScrap() throws Exception {
-        user.setUserId(ScrapServiceIT.HONG_GIL_DONG_USER_ID);
-        user.setName(ScrapServiceIT.HONG_GIL_DONG_NAME);
-        user.setRegNo(ScrapServiceIT.HONG_GIL_DONG_REG_NO);
-
-        restUserMockMvc
-                .perform(post("/szs/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtil.convertObjectToJsonBytes(user)))
-                .andExpect(status().isCreated());
-
-        Optional<Scrap> scrap = scrapRepository.findOneByUserId(user.getUserId());
-        assertThat(scrap).isPresent();
-    }
+//    void creatUserWithAsyncScrap() throws Exception {
+//        user.setUserId(ScrapServiceIT.HONG_GIL_DONG_USER_ID);
+//        user.setName(ScrapServiceIT.HONG_GIL_DONG_NAME);
+//        user.setRegNo(ScrapServiceIT.HONG_GIL_DONG_REG_NO);
+//
+//        restUserMockMvc
+//                .perform(post("/szs/signup")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(TestUtil.convertObjectToJsonBytes(user)))
+//                .andExpect(status().isCreated());
+//
+//        Optional<Scrap> scrap = scrapRepository.findOneByUserId(user.getUserId());
+//        assertThat(scrap).isPresent();
+//    }
 
     @Test
     @Transactional
