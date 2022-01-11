@@ -89,12 +89,8 @@ public class ScrapService {
         List<ScrapSalary> scrapSalaryList = new ArrayList();
         List<ScrapTax> scrapTaxList = new ArrayList();
         salaryList.forEach(salaryInfo -> {
-            try {
-                ScrapSalary scrapSalary = saveScrappedSalary(scrap, (HashMap<String, Object>) salaryInfo);
-                scrapSalaryList.add(scrapSalary);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ScrapSalary scrapSalary = saveScrappedSalary(scrap, (HashMap<String, Object>) salaryInfo);
+            scrapSalaryList.add(scrapSalary);
         });
 
         taxList.forEach(taxInfo -> {
@@ -123,22 +119,25 @@ public class ScrapService {
         return scrapRepository.save(result);
     }
 
-    private ScrapSalary saveScrappedSalary(Scrap scrap, HashMap<String, Object> salaryInfo) throws Exception {
+    private ScrapSalary saveScrappedSalary(Scrap scrap, HashMap<String, Object> salaryInfo) {
         SimpleDateFormat tranFormat = new SimpleDateFormat("yyyy.mm.dd");
-        ScrapSalary scrappedSalary = new ScrapSalary()
-                .title((String) salaryInfo.get("소득내역"))
-                .total(getCastedMoney(salaryInfo.get("총지급액")))
-                .companyName((String) salaryInfo.get("기업명"))
-                .userName((String) salaryInfo.get("이름"))
-                .regNo(AES256Utils.encrypt((String) salaryInfo.get("주민등록번호")))
-                .category((String) salaryInfo.get("소득구분"))
-                .companyNo((String) salaryInfo.get("사업자등록번호"))
-                .startDate(tranFormat.parse((String) salaryInfo.get("업무시작일")))
-                .endDate(tranFormat.parse((String) salaryInfo.get("업무종료일")))
-                .payDate(tranFormat.parse((String) salaryInfo.get("지급일")))
-                .scrap(scrap);
-
-        return scrapSalaryRepository.save(scrappedSalary);
+        try {
+            ScrapSalary scrappedSalary = new ScrapSalary()
+                    .title((String) salaryInfo.get("소득내역"))
+                    .total(getCastedMoney(salaryInfo.get("총지급액")))
+                    .companyName((String) salaryInfo.get("기업명"))
+                    .userName((String) salaryInfo.get("이름"))
+                    .regNo(AES256Utils.encrypt((String) salaryInfo.get("주민등록번호")))
+                    .category((String) salaryInfo.get("소득구분"))
+                    .companyNo((String) salaryInfo.get("사업자등록번호"))
+                    .startDate(tranFormat.parse((String) salaryInfo.get("업무시작일")))
+                    .endDate(tranFormat.parse((String) salaryInfo.get("업무종료일")))
+                    .payDate(tranFormat.parse((String) salaryInfo.get("지급일")))
+                    .scrap(scrap);
+            return scrapSalaryRepository.save(scrappedSalary);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private ScrapTax saveScrappedTax(Scrap scrap, HashMap<String, Object> taxInfo) {
@@ -168,7 +167,7 @@ public class ScrapService {
                     try {
                         saveScrapInfo(user.getName(), AES256Utils.decrypt(user.getRegNo()));
                     } catch (Exception e) {
-                        log.debug("Error in save scrap info {}", e);
+                        throw new RuntimeException(e);
                     }
                 });
     }
