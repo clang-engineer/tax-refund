@@ -77,7 +77,7 @@ public class ScrapService {
         Map map = Map.of("name", name, "regNo", regNo);
         HashMap externalScrapInfo = (HashMap) this.restTemplate.postForObject("https://codetest.3o3.co.kr/scrap/", map, Map.class);
 
-        if (externalScrapInfo.size() <= 1) {
+        if (externalScrapInfo == null || externalScrapInfo.size() <= 1) {
             throw new ScrapNotFoundException();
         }
 
