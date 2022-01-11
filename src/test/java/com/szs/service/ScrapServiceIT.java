@@ -10,6 +10,7 @@ import com.szs.repository.ScrapSalaryRepository;
 import com.szs.repository.ScrapTaxRepository;
 import com.szs.repository.UserRepository;
 import com.szs.service.dto.ScrapDTO;
+import com.szs.web.AES256Utils;
 import com.szs.web.TestUtil;
 import com.szs.web.UserResourceIT;
 import com.szs.web.errors.ScrapNotFoundException;
@@ -108,9 +109,10 @@ public class ScrapServiceIT {
     }
 
     @BeforeEach
-    public void initTest() {
+    public void initTest() throws Exception{
         user = UserResourceIT.createEntity().useId(DEFAULT_USER_ID);
         user.setPassword(passwordEncoder.encode("1234"));
+        user.setRegNo(AES256Utils.encrypt(user.getRegNo()));
 
         scrap = createEntity();
         scrapSalary = createScrapSalary();
@@ -152,7 +154,7 @@ public class ScrapServiceIT {
         scrapService.setRestTemplate(restTemplate);
 
         assertThrows(ScrapNotFoundException.class, () -> {
-            scrapService.saveScrapInfo(DEFAULT_USER_ID, UserResourceIT.createEntity().getRegNo());
+            scrapService.saveScrapInfo(user);
         });
     }
 
@@ -169,7 +171,7 @@ public class ScrapServiceIT {
         scrapService.setRestTemplate(restTemplate);
 
         //when
-        scrapService.saveScrapInfo(DEFAULT_USER_ID, UserResourceIT.createEntity().getRegNo());
+        scrapService.saveScrapInfo(user);
 
         //then
         Scrap scrap = scrapRepository.findOneByUserId(DEFAULT_USER_ID).orElseThrow(() -> new Exception());

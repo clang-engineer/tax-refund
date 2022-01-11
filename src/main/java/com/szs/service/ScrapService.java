@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class ScrapService {
     private final Logger log = LoggerFactory.getLogger(ScrapService.class);
 
-    public static final String SZS_URL ="https://codetest.3o3.co.kr/scrap/";
+    public static final String SZS_URL = "https://codetest.3o3.co.kr/scrap/";
 
     private RestTemplate restTemplate = new RestTemplateBuilder().build();
 
@@ -58,30 +58,31 @@ public class ScrapService {
         this.restTemplate = restTemplate;
     }
 
-    public Optional<ScrapDTO> getScrapInfo() throws Exception {
+    public Optional<ScrapDTO> getScrapInfo() {
         log.debug("Get current user scrap info");
 
         User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).orElseThrow(() -> new UserInfoNotFoundException());
-        Optional<ScrapDTO> scrapDTO = scrapRepository.findOneByUserId(user.getUserId()).map(ScrapDTO::new).map(data -> {
-            List<ScrapSalary> scrapSalaryList = scrapSalaryRepository.findAllByScrapId(data.getId());
-            data.setScrapSalaryList(scrapSalaryList);
-            List<ScrapTax> scrapTaxList = scrapTaxRepository.findAllByScrapId(data.getId());
-            data.setScrapTaxList(scrapTaxList);
 
-            return data;
-        });
+        Optional<ScrapDTO> scrapDTO = scrapRepository.findOneByUserId(user.getUserId()).map(ScrapDTO::new);
 
-        if (scrapDTO.isEmpty()) {
-            scrapDTO = saveScrapInfo(user.getName(), AES256Utils.decrypt(user.getRegNo()));
+        if (scrapDTO.isPresent()) {
+            return scrapDTO.map(data -> {
+                List<ScrapSalary> scrapSalaryList = scrapSalaryRepository.findAllByScrapId(data.getId());
+                data.setScrapSalaryList(scrapSalaryList);
+                List<ScrapTax> scrapTaxList = scrapTaxRepository.findAllByScrapId(data.getId());
+                data.setScrapTaxList(scrapTaxList);
+                return data;
+            });
+        } else {
+            return saveScrapInfo(user);
         }
 
-        return scrapDTO;
     }
 
-    public Optional<ScrapDTO> saveScrapInfo(String name, String regNo) {
+    public Optional<ScrapDTO> saveScrapInfo(User user) {
         log.debug("Save current user scrap info from external network");
         try {
-            Map map = Map.of("name", name, "regNo", regNo);
+            Map map = Map.of("name", user.getName(), "regNo", AES256Utils.decrypt(user.getRegNo()));
 
             HashMap externalScrapInfo = (HashMap) this.restTemplate.postForObject("https://codetest.3o3.co.kr/scrap/", map, Map.class);
 
@@ -89,7 +90,7 @@ public class ScrapService {
                 throw new ScrapNotFoundException();
             }
 
-            Scrap scrap = saveScrap(externalScrapInfo);
+            Scrap scrap = saveScrap(externalScrapInfo, user.getUserId());
 
             List salaryList = (List) ((HashMap) externalScrapInfo.get("jsonList")).get("scrap001");
             List taxList = (List) ((HashMap) externalScrapInfo.get("jsonList")).get("scrap002");
@@ -117,7 +118,7 @@ public class ScrapService {
         }
     }
 
-    private Scrap saveScrap(HashMap externalJson) {
+    private Scrap saveScrap(HashMap externalJson, String userId) {
         HashMap jsonList = (HashMap) externalJson.get("jsonList");
 
         Scrap result = new Scrap()
@@ -128,7 +129,7 @@ public class ScrapService {
                 .errMsg((String) jsonList.get("errMsg"))
                 .company((String) jsonList.get("company"))
                 .svcCd((String) jsonList.get("svcCd"))
-                .userId(jsonList.get("userId").toString());
+                .userId(userId);
         return scrapRepository.save(result);
     }
 
@@ -176,12 +177,6 @@ public class ScrapService {
         List<String> scrappedUserId = scrapRepository.findAll().stream().map(Scrap::getUserId).collect(Collectors.toList());
         userRepository.findAll().stream()
                 .filter(user -> !scrappedUserId.contains(user.getUserId()))
-                .forEach(user -> {
-                    try {
-                        saveScrapInfo(user.getName(), AES256Utils.decrypt(user.getRegNo()));
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                .forEach(user -> saveScrapInfo(user));
     }
 }

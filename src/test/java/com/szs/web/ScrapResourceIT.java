@@ -102,7 +102,7 @@ class ScrapResourceIT {
         userRepository.saveAndFlush(user);
 
         ScrapService scrapService = mock(ScrapService.class);
-        when(scrapService.saveScrapInfo(anyString(), anyString())).thenThrow(new ScrapNotFoundException());
+        when(scrapService.saveScrapInfo(any())).thenThrow(new ScrapNotFoundException());
         ScrapResource scrapResource = new ScrapResource(scrapService);
 
         assertThrows(ScrapNotFoundException.class, () -> {
