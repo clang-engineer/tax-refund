@@ -148,7 +148,7 @@ public class ScrapServiceIT {
     @Test
     @Transactional
     void testSaveScarpInfoScrapNotFoundException() throws Exception {
-        when(restTemplate.postForObject(postUrlCapture.capture(), postParamCapture.capture(), eq(Map.class))).thenReturn(null);
+        when(restTemplate.postForObject(anyString(), anyString(), eq(Map.class))).thenReturn(null);
         scrapService.setRestTemplate(restTemplate);
 
         assertThrows(ScrapNotFoundException.class, () -> {
@@ -164,15 +164,21 @@ public class ScrapServiceIT {
         JSONObject jsonObject = TestUtil.createScrapJSONObject();
         jsonObject.getJSONObject("jsonList").put("userId", DEFAULT_USER_ID);
 
+        //given
         when(restTemplate.postForObject(postUrlCapture.capture(), postParamCapture.capture(), eq(Map.class))).thenReturn(TestUtil.getMapFromJsonObject(jsonObject));
         scrapService.setRestTemplate(restTemplate);
 
+        //when
         scrapService.saveScrapInfo(DEFAULT_USER_ID, UserResourceIT.createEntity().getRegNo());
 
+        //then
         Scrap scrap = scrapRepository.findOneByUserId(DEFAULT_USER_ID).orElseThrow(() -> new Exception());
         assertThat(scrap).isNotNull();
         assertThat(scrapTaxRepository.findAllByScrapId(scrap.getId())).isNotEmpty();
         assertThat(scrapSalaryRepository.findAllByScrapId(scrap.getId())).isNotEmpty();
+
+        assertThat(postUrlCapture.getValue()).isEqualTo(ScrapService.SZS_URL);
+        assertThat(postParamCapture.getValue().get("name")).isEqualTo(user.getName());
     }
 
     @Test

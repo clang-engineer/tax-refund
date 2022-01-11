@@ -5,6 +5,8 @@ import com.szs.domain.Scrap;
 import com.szs.domain.User;
 import com.szs.repository.ScrapRepository;
 import com.szs.repository.UserRepository;
+import com.szs.service.ScrapService;
+import com.szs.web.errors.ScrapNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -63,9 +67,10 @@ class ScrapResourceIT {
     }
 
     @BeforeEach
-    public void initTest() {
+    public void initTest() throws Exception {
         user = UserResourceIT.createEntity().useId(DEFAULT_USER_ID);
         user.setPassword(passwordEncoder.encode("1234"));
+        user.setRegNo(AES256Utils.encrypt(user.getRegNo()));
 
         scrap = createEntity();
     }
@@ -73,7 +78,7 @@ class ScrapResourceIT {
     @Test
     @Transactional
     @WithMockUser(DEFAULT_USER_ID)
-    void getScrap() throws Exception {
+    void getScrapInLocalNetwork() throws Exception {
         userRepository.saveAndFlush(user);
         scrapRepository.saveAndFlush(scrap);
 
@@ -88,7 +93,31 @@ class ScrapResourceIT {
                 .andExpect(jsonPath("$.svcCd").value(scrap.getSvcCd()))
                 .andExpect(jsonPath("$.userId").value(scrap.getUserId()))
         ;
+    }
 
+    @Test
+    @Transactional
+    @WithMockUser(DEFAULT_USER_ID)
+    void failToGetScrapFromExternalNetwork() throws Exception {
+        userRepository.saveAndFlush(user);
+
+        ScrapService scrapService = mock(ScrapService.class);
+        when(scrapService.saveScrapInfo(anyString(), anyString())).thenThrow(new ScrapNotFoundException());
+        ScrapResource scrapResource = new ScrapResource(scrapService);
+
+        assertThrows(ScrapNotFoundException.class, () -> {
+            scrapResource.getScrap();
+        });
+
+        verify(scrapService, times(1)).getScrapInfo();
+    }
+
+    @Test
+    @Transactional
+    void getScrapExceptionWithNoLogin() throws Exception {
+        restScrapMockMvc
+                .perform(get("/szs/scrap"))
+                .andExpect(status().isUnauthorized());
     }
 
 }

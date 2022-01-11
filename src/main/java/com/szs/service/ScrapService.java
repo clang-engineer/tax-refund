@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 public class ScrapService {
     private final Logger log = LoggerFactory.getLogger(ScrapService.class);
 
+    public static final String SZS_URL ="https://codetest.3o3.co.kr/scrap/";
+
     private RestTemplate restTemplate = new RestTemplateBuilder().build();
 
     private final UserRepository userRepository;

@@ -5,6 +5,7 @@ import com.szs.repository.UserRepository;
 import com.szs.security.SecurityUtils;
 import com.szs.service.ScrapService;
 import com.szs.service.dto.UserDTO;
+import com.szs.web.errors.ScrapSaveFailException;
 import com.szs.web.errors.UserInfoNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ public class UserResource {
                 try {
                     scrapService.saveScrapInfo(user.getName(), AES256Utils.decrypt(user.getRegNo()));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new ScrapSaveFailException();
                 }
             }
         }).start();

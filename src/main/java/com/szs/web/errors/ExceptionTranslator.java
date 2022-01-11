@@ -31,8 +31,8 @@ public class ExceptionTranslator {
 
     @ExceptionHandler
     public ResponseEntity<ErrorDTO> handleScrapNotFoundException(ScrapNotFoundException ex) {
-        ErrorDTO errorDTO = new ErrorDTO("Scrap Not Found", "can't find scrap info", HttpStatus.FORBIDDEN);
-        return new ResponseEntity<>(errorDTO, HttpStatus.FORBIDDEN);
+        ErrorDTO errorDTO = new ErrorDTO("Scrap Not Found", "can't find scrap info", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorDTO, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
