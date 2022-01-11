@@ -13,6 +13,11 @@ public class ExceptionTranslatorTestController {
         throw new UnAuthorizedException();
     }
 
+    @GetMapping("/scrap-not-found")
+    public void scrapNotFoundException() {
+        throw new ScrapNotFoundException();
+    }
+
     @GetMapping("/internal-server-error")
     public void internalServerError() {
         throw new RuntimeException();

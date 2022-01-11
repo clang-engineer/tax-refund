@@ -31,6 +31,17 @@ class ExceptionTranslatorIT {
     }
 
     @Test
+    void testScrapNotFound() throws Exception {
+        mockMvc
+                .perform(get("/api/exception-translator-test/scrap-not-found"))
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.title").value("Scrap Not Found"))
+                .andExpect(jsonPath("$.description").value("can't find scrap info"))
+                .andExpect(jsonPath("$.status").value(403));
+    }
+
+    @Test
     void testInternalServerError() throws Exception {
         mockMvc
                 .perform(get("/api/exception-translator-test/internal-server-error"))
