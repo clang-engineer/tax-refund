@@ -7,6 +7,7 @@ import com.szs.repository.UserRepository;
 import com.szs.security.SecurityUtils;
 import com.szs.service.ScrapService;
 import com.szs.service.dto.ScrapDTO;
+import com.szs.web.errors.UnAuthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -41,7 +42,7 @@ public class RefundController {
 
         String username = SecurityUtils.getCurrentUserLogin()
                 .flatMap(userRepository::findOneByUserId).map(User::getName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+                .orElseThrow(() -> new UnAuthorizedException());
 
         result.put("이름", username);
 

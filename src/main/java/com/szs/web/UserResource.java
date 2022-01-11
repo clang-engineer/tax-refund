@@ -5,14 +5,13 @@ import com.szs.repository.UserRepository;
 import com.szs.security.SecurityUtils;
 import com.szs.service.ScrapService;
 import com.szs.service.dto.UserDTO;
+import com.szs.web.errors.UnAuthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -64,7 +63,7 @@ public class UserResource {
     public ResponseEntity<UserDTO> getUser() throws Exception {
         log.debug("REST request to get User");
 
-        UserDTO userDTO = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).map(UserDTO::new).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        UserDTO userDTO = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).map(UserDTO::new).orElseThrow(() -> new UnAuthorizedException());
         userDTO.setRegNo(AES256Utils.decrypt(userDTO.getRegNo()));
 
         return ResponseEntity.ok(userDTO);
