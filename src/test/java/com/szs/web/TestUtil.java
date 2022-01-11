@@ -47,14 +47,17 @@ public class TestUtil {
 
         result.put("appVer", "test-appVer");
         result.put("hostNm", "test-hostNm");
-        result.put("errMsg", "test-errMsg");
-        result.put("company", "test-company");
-        result.put("svcCd", "test-svcCd");
-        result.put("userId", "1");
         result.put("workerReqDt", "2022-01-11T04:59:59.731688");
         result.put("workerResDt", "2022-01-11T04:59:59.731688");
 
         JSONObject jsonListObject = new JSONObject();
+
+
+        jsonListObject.put("errMsg", "test-errMsg");
+        jsonListObject.put("company", "test-company");
+        jsonListObject.put("svcCd", "test-svcCd");
+        jsonListObject.put("userId", "1");
+
         JSONArray scrap001List = new JSONArray();
         JSONObject scrap001Object = new JSONObject();
         scrap001Object.put("소득내역", "급여");
@@ -69,7 +72,6 @@ public class TestUtil {
         scrap001Object.put("사업자등록번호", "123-12-123456");
         scrap001List.put(scrap001Object);
         jsonListObject.put("scrap001", scrap001List);
-        jsonListObject.put("userId", "test");
 
         JSONArray scrap002List = new JSONArray();
         JSONObject scrap002Object = new JSONObject();
