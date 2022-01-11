@@ -7,10 +7,10 @@ public class ErrorDTO {
     private String description;
     private Integer status;
 
-    public ErrorDTO(String title, String description, Integer status) {
+    public ErrorDTO(String title, String description, HttpStatus httpStatus) {
         this.title = title;
         this.description = description;
-        this.status = status;
+        this.status = httpStatus.value();
     }
 
     public ErrorDTO(HttpStatus httpStatus) {
