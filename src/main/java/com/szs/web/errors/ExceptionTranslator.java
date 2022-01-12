@@ -1,5 +1,6 @@
 package com.szs.web.errors;
 
+import com.szs.service.ScrapSaveFailException;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

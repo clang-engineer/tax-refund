@@ -1,4 +1,4 @@
-package com.szs.web.errors;
+package com.szs.service;
 
 public class ScrapSaveFailException extends RuntimeException {
 }

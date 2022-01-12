@@ -12,7 +12,6 @@ import com.szs.security.SecurityUtils;
 import com.szs.service.dto.ScrapDTO;
 import com.szs.web.AES256Utils;
 import com.szs.web.errors.ScrapNotFoundException;
-import com.szs.web.errors.ScrapSaveFailException;
 import com.szs.web.errors.UserInfoNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
