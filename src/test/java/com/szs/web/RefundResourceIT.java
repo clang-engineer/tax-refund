@@ -55,15 +55,4 @@ class RefundResourceIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value("Not Authorized")) ;
     }
-
-    @Test
-    @Transactional
-    @WithMockUser(username = "AAAAAAAAA")
-    public void scrapNotFoundException() throws Exception {
-        userRepository.saveAndFlush(user);
-        restRefundMock.perform(get("/szs/refund"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.title").value("Scrap Not Found"));
-    }
 }
