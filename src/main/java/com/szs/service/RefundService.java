@@ -1,8 +1,8 @@
-package com.szs.web;
+package com.szs.service;
 
 import com.szs.config.Constants;
 
-public class RefundUtils {
+public class RefundService {
     public static Integer getLimitedMoney(Integer totalSalary) {
         if (totalSalary <= Constants.REFUND_LOWER_LIMIT) {
             return 740000;

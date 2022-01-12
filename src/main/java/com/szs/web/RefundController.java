@@ -5,6 +5,7 @@ import com.szs.domain.ScrapTax;
 import com.szs.domain.User;
 import com.szs.repository.UserRepository;
 import com.szs.security.SecurityUtils;
+import com.szs.service.RefundService;
 import com.szs.service.ScrapService;
 import com.szs.service.dto.ScrapDTO;
 import com.szs.web.errors.UserInfoNotFoundException;
@@ -28,11 +29,14 @@ public class RefundController {
 
     private ScrapService scrapService;
 
+    private RefundService refundService;
+
     public RefundController(
             UserRepository userRepository,
             ScrapService scrapService) {
         this.userRepository = userRepository;
         this.scrapService = scrapService;
+        this.refundService = new RefundService();
     }
 
     @GetMapping("/refund")
@@ -48,13 +52,13 @@ public class RefundController {
 
         ScrapDTO scrap = scrapService.getScrapInfo().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
-        int limitedMoney = RefundUtils.getLimitedMoney(scrap.getScrapSalaryList().stream().map(ScrapSalary::getTotal).reduce(0, Integer::sum));
-        int deductedMoney = RefundUtils.getDeductedMoney(scrap.getScrapTaxList().stream().map(ScrapTax::getTotal).reduce(0, Integer::sum));
+        int limitedMoney = refundService.getLimitedMoney(scrap.getScrapSalaryList().stream().map(ScrapSalary::getTotal).reduce(0, Integer::sum));
+        int deductedMoney = refundService.getDeductedMoney(scrap.getScrapTaxList().stream().map(ScrapTax::getTotal).reduce(0, Integer::sum));
         int refundMoney = Math.min(limitedMoney, deductedMoney);
 
-        result.put("한도", RefundUtils.getFormattedMoney(limitedMoney));
-        result.put("공제액", RefundUtils.getFormattedMoney(deductedMoney));
-        result.put("환급액", RefundUtils.getFormattedMoney(refundMoney));
+        result.put("한도", refundService.getFormattedMoney(limitedMoney));
+        result.put("공제액", refundService.getFormattedMoney(deductedMoney));
+        result.put("환급액", refundService.getFormattedMoney(refundMoney));
 
         return ResponseEntity.ok(result);
     }
