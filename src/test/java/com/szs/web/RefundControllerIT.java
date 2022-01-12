@@ -34,12 +34,16 @@ class RefundControllerIT {
 
     private User user;
 
+    private String userId;
+
     @BeforeEach
-    void initTest() {
+    void initTest() throws Exception {
         scrapService = mock(ScrapService.class);
         refundService = mock(RefundService.class);
 
         user = UserResourceIT.createEntity();
+        user.setRegNo(AES256Utils.encrypt(user.getRegNo()));
+        user.setPassword("test");
     }
 
     @Test
@@ -52,5 +56,14 @@ class RefundControllerIT {
                 .andExpect(jsonPath("$.title").value("Not Authorized")) ;
     }
 
-
+    @Test
+    @Transactional
+    @WithMockUser(username = "AAAAAAAAA")
+    public void scrapNotFoundException() throws Exception {
+        userRepository.saveAndFlush(user);
+        restRefundMock.perform(get("/szs/refund"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.title").value("Scrap Not Found"));
+    }
 }
