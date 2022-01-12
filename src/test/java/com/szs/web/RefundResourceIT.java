@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @IntegrationTest
-class RefundControllerIT {
+class RefundResourceIT {
 
     @Autowired
     private UserRepository userRepository;

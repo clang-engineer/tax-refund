@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/szs")
-public class RefundController {
+public class RefundResource {
     private Logger log = LoggerFactory.getLogger(ScrapResource.class);
 
     private UserRepository userRepository;
@@ -31,7 +31,7 @@ public class RefundController {
 
     private RefundService refundService;
 
-    public RefundController(
+    public RefundResource(
             UserRepository userRepository,
             ScrapService scrapService) {
         this.userRepository = userRepository;
