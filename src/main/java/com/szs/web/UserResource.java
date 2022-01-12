@@ -6,6 +6,7 @@ import com.szs.security.SecurityUtils;
 import com.szs.service.ScrapService;
 import com.szs.service.dto.UserDTO;
 import com.szs.web.errors.UserInfoNotFoundException;
+import com.szs.web.vm.ManagedUserVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -37,10 +38,10 @@ public class UserResource {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws Exception {
-        log.debug("REST request to save User: {}", userDTO);
+    public ResponseEntity<User> createUser(@Valid @RequestBody ManagedUserVM managedUserVM) throws Exception {
+        log.debug("REST request to save User: {}", managedUserVM);
 
-        User user = new User(userDTO);
+        User user = new User(managedUserVM);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRegNo(AES256Utils.encrypt(user.getRegNo()));

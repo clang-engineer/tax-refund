@@ -2,6 +2,7 @@ package com.szs.domain;
 
 import com.szs.config.Constants;
 import com.szs.service.dto.UserDTO;
+import com.szs.web.vm.ManagedUserVM;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -110,6 +111,13 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.password = userDTO.getPassword();
         this.name = userDTO.getName();
         this.regNo = userDTO.getRegNo();
+    }
+
+    public User(ManagedUserVM managedUserVM) {
+        this.userId = managedUserVM.getUserId();
+        this.password = managedUserVM.getPassword();
+        this.name = managedUserVM.getName();
+        this.regNo = managedUserVM.getRegNo();
     }
 
     @Override
