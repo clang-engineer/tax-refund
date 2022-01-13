@@ -71,11 +71,11 @@ class RefundResourceIT {
         Scrap scrap = new Scrap().userId(user.getUserId());
         scrapRepository.saveAndFlush(scrap);
 
-        int totalSalary = Constants.SALARY_LOWER_BOUNDARY - 1;
+        int totalSalary = Constants.SALARY_LOWER_BOUNDARY - 100000;
         ScrapSalary scrapSalary = new ScrapSalary().scrap(scrap).total(totalSalary);
         scrapSalaryRepository.saveAndFlush(scrapSalary);
 
-        int totalTax = Constants.TAX_BOUNDARY - 1;
+        int totalTax = Constants.TAX_BOUNDARY - 100000;
         ScrapTax scrapTax = new ScrapTax().scrap(scrap).total(totalTax);
         scrapTaxRepository.saveAndFlush(scrapTax);
 
@@ -85,9 +85,37 @@ class RefundResourceIT {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.한도").value("74만원"))
-                .andExpect(jsonPath("$.공제액").value("71만 4천원"))
-                .andExpect(jsonPath("$.환급액").value("71만 4천원"))
+                .andExpect(jsonPath("$.공제액").value("66만원"))
+                .andExpect(jsonPath("$.환급액").value("66만원"))
         ;
+    }
 
+    @Test
+    @Transactional
+    @WithMockUser("test")
+    public void testRefundUpperBoundary() throws Exception {
+        //given
+        user.setUserId("test");
+        userRepository.saveAndFlush(user);
+        Scrap scrap = new Scrap().userId(user.getUserId());
+        scrapRepository.saveAndFlush(scrap);
+
+        int totalSalary = Constants.SALARY_UPPER_BOUNDARY + 100000;
+        ScrapSalary scrapSalary = new ScrapSalary().scrap(scrap).total(totalSalary);
+        scrapSalaryRepository.saveAndFlush(scrapSalary);
+
+        int totalTax = Constants.TAX_BOUNDARY + 100000;
+        ScrapTax scrapTax = new ScrapTax().scrap(scrap).total(totalTax);
+        scrapTaxRepository.saveAndFlush(scrapTax);
+
+        //when, then
+        restRefundMock.perform(get("/szs/refund"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.한도").value("61만원"))
+                .andExpect(jsonPath("$.공제액").value("74만 5천원"))
+                .andExpect(jsonPath("$.환급액").value("61만원"))
+        ;
     }
 }
