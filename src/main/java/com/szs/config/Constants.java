@@ -9,5 +9,7 @@ public final class Constants {
     public static final Integer SALARY_UPPER_BOUNDARY = 70000000;
     public static final Integer SALARY_LOWER_BOUNDARY = 33000000;
 
+    public static final Integer TAX_BOUNDARY = 1300000;
+
     private Constants() {}
 }

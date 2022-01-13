@@ -16,7 +16,7 @@ public class RefundService {
     }
 
     public Integer getDeductedMoney(Integer calculateTax) {
-        Integer standardMoney = 1300000;
+        Integer standardMoney = Constants.TAX_BOUNDARY;
         if (calculateTax <= standardMoney) {
             return (int) (calculateTax * 0.55);
         } else {
