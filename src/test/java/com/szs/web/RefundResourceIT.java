@@ -130,11 +130,17 @@ class RefundResourceIT {
         ScrapSalary scrapSalary = new ScrapSalary().scrap(scrap).total(totalSalary);
         scrapSalaryRepository.saveAndFlush(scrapSalary);
 
+        int totalTax = Constants.TAX_BOUNDARY + 100000;
+        ScrapTax scrapTax = new ScrapTax().scrap(scrap).total(totalTax);
+        scrapTaxRepository.saveAndFlush(scrapTax);
+
         //when, then
         restRefundMock.perform(get("/szs/refund"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.한도").value("66만원"))
+                .andExpect(jsonPath("$.공제액").value("74만 5천원"))
+                .andExpect(jsonPath("$.환급액").value("66만원"))
         ;
     }
 }
