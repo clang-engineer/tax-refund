@@ -33,6 +33,13 @@ public class RefundServiceUnitTest {
     }
 
     @Test
+    void testTaxBoundary() {
+        assertThat(refundService.getDeductedMoney(1300000)).isEqualTo(715000);
+        assertThat(refundService.getDeductedMoney(1290000)).isEqualTo(709500);
+        assertThat(refundService.getDeductedMoney(1310000)).isEqualTo(718000);
+    }
+
+    @Test
     void testFormattedMoney() {
         assertThat(refundService.getFormattedMoney(91230000)).isEqualTo("9123만원");
         assertThat(refundService.getFormattedMoney(1230000)).isEqualTo("123만원");
