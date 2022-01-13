@@ -13,7 +13,6 @@ import com.szs.service.dto.ScrapDTO;
 import com.szs.web.AES256Utils;
 import com.szs.web.TestUtil;
 import com.szs.web.UserResourceIT;
-import com.szs.web.errors.ScrapNotFoundException;
 import com.szs.web.errors.UserInfoNotFoundException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -149,11 +148,11 @@ public class ScrapServiceIT {
 
     @Test
     @Transactional
-    void testSaveScarpInfoScrapNotFoundException() throws Exception {
+    void testSaveScarpInfoScrapSaveFailException() throws Exception {
         when(restTemplate.postForObject(anyString(), anyString(), eq(Map.class))).thenReturn(null);
         scrapService.setRestTemplate(restTemplate);
 
-        assertThrows(ScrapNotFoundException.class, () -> {
+        assertThrows(ScrapSaveFailException.class, () -> {
             scrapService.saveScrapInfo(user);
         });
     }

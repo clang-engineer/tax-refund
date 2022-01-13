@@ -11,7 +11,6 @@ import com.szs.repository.UserRepository;
 import com.szs.security.SecurityUtils;
 import com.szs.service.dto.ScrapDTO;
 import com.szs.web.AES256Utils;
-import com.szs.web.errors.ScrapNotFoundException;
 import com.szs.web.errors.UserInfoNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +85,7 @@ public class ScrapService {
             HashMap externalScrapInfo = (HashMap) this.restTemplate.postForObject("https://codetest.3o3.co.kr/scrap/", map, Map.class);
 
             if (externalScrapInfo == null || externalScrapInfo.size() <= 1) {
-                throw new ScrapNotFoundException();
+                throw new Exception();
             }
 
             Scrap scrap = saveScrap(externalScrapInfo, user.getUserId());
@@ -110,8 +109,6 @@ public class ScrapService {
             scrapDTO.setScrapSalaryList(scrapSalaryList);
             scrapDTO.setScrapTaxList(scrapTaxList);
             return Optional.of(scrapDTO);
-        } catch (ScrapNotFoundException e) {
-            throw new ScrapNotFoundException();
         } catch (Exception e) {
             throw new ScrapSaveFailException();
         }
