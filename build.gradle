@@ -10,42 +10,56 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
-	mavenCentral()
-	maven { url 'https://repo.spring.io/milestone' }
-	maven { url 'https://repo.spring.io/snapshot' }
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/snapshot' }
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	runtimeOnly 'com.h2database:h2'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'io.springfox:springfox-swagger2:3.0.0'
-	implementation 'io.springfox:springfox-boot-starter:3.0.0'
-	implementation 'org.liquibase:liquibase-core:4.3.2'
-	implementation "org.apache.commons:commons-lang3"
-	implementation "org.springframework.boot:spring-boot-starter-security"
-	testImplementation "org.springframework.security:spring-security-test"
-	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
-	implementation "io.jsonwebtoken:jjwt-api:0.11.2"
-	implementation "io.jsonwebtoken:jjwt-impl:0.11.2"
-	implementation "io.jsonwebtoken:jjwt-jackson:0.11.2"
-	implementation "org.hibernate.validator:hibernate-validator"
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    runtimeOnly 'com.h2database:h2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'org.liquibase:liquibase-core:4.3.2'
+    implementation "org.apache.commons:commons-lang3"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    testImplementation "org.springframework.security:spring-security-test"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
+    implementation "io.jsonwebtoken:jjwt-api:0.11.2"
+    implementation "io.jsonwebtoken:jjwt-impl:0.11.2"
+    implementation "io.jsonwebtoken:jjwt-jackson:0.11.2"
+    implementation "org.hibernate.validator:hibernate-validator"
 
-	// Lombok
-	compileOnly "org.projectlombok:lombok:${lombok_version}"
-	annotationProcessor "org.projectlombok:lombok:${lombok_version}"
-	implementation("org.projectlombok:lombok:${lombok_version}")
+    // Lombok
+    compileOnly "org.projectlombok:lombok:${lombok_version}"
+    annotationProcessor "org.projectlombok:lombok:${lombok_version}"
+    implementation("org.projectlombok:lombok:${lombok_version}")
 
-	// Lombok
-	testImplementation("org.projectlombok:lombok:${lombok_version}")
-	testAnnotationProcessor("org.projectlombok:lombok:${lombok_version}")
-	testCompileOnly("org.projectlombok:lombok:${lombok_version}")
+    // Lombok
+    testImplementation("org.projectlombok:lombok:${lombok_version}")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombok_version}")
+    testCompileOnly("org.projectlombok:lombok:${lombok_version}")
 
-	testImplementation "org.mockito:mockito-inline:3.8.0"
+    testImplementation "org.mockito:mockito-inline:3.8.0"
 }
 
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "com/szs/TaxRefundApplication.class",
+                    "com/szs/service/dto/*",
+                    "**/*Utils.class"
+            ])
+        }))
+    }
 }
