@@ -57,6 +57,7 @@ jacocoTestReport {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
                     "com/szs/TaxRefundApplication.class",
+                    "com/szs/domain/*",
                     "com/szs/service/dto/*",
                     "**/*Utils.class"
             ])
