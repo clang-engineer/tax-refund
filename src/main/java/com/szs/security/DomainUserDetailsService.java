@@ -42,7 +42,7 @@ public class DomainUserDetailsService implements UserDetailsService {
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(User user) {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        grantedAuthorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.ANONYMOUS));
 
         return new org.springframework.security.core.userdetails.User(user.getUserId(), user.getPassword(), grantedAuthorities);
     }
