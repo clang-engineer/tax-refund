@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
@@ -81,7 +80,6 @@ class RefundResourceIT {
 
         //when, then
         restRefundMock.perform(get("/szs/refund"))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.한도").value("74만원"))
@@ -110,12 +108,33 @@ class RefundResourceIT {
 
         //when, then
         restRefundMock.perform(get("/szs/refund"))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.한도").value("61만원"))
                 .andExpect(jsonPath("$.공제액").value("74만 5천원"))
                 .andExpect(jsonPath("$.환급액").value("61만원"))
+        ;
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser("test")
+    public void testRefundSalaryMiddleBoundary() throws Exception {
+        //given
+        user.setUserId("test");
+        userRepository.saveAndFlush(user);
+        Scrap scrap = new Scrap().userId(user.getUserId());
+        scrapRepository.saveAndFlush(scrap);
+
+        int totalSalary = Constants.SALARY_UPPER_BOUNDARY - 100000;
+        ScrapSalary scrapSalary = new ScrapSalary().scrap(scrap).total(totalSalary);
+        scrapSalaryRepository.saveAndFlush(scrapSalary);
+
+        //when, then
+        restRefundMock.perform(get("/szs/refund"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.한도").value("66만원"))
         ;
     }
 }
