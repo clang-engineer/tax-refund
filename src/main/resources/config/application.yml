@@ -19,5 +19,5 @@ application:
   security:
     authentication:
       jwt:
-        base64-secret: NzdlZGZjZWU5Y2MwYTM4MWFmYmVjNmIzZTY2YzllZmJjODE1NGM4YmQ1N2ZkMjg0ZmRjNmZlNzEzNzBkNDUzNGExYjdlZTdkZDkwODI2NjZiNDFhYjk5ZTIxMzJjNzJkM2ZmZTA1MTBkNWQ0YWNlNmYyMDM2OGY2YzQ2NzkyMjg=
+        base64-secret: M3ozQ29kaW5nVGVzdFlvdW5nLUp1bjN6M0NvZGluZ1Rlc3RZb3VuZy1KdW4zejNDb2RpbmdUZXN0WW91bmctSnVu
         token-validity-in-seconds: 86400
