@@ -8,15 +8,14 @@ import com.szs.security.SecurityUtils;
 import com.szs.service.RefundService;
 import com.szs.service.ScrapService;
 import com.szs.service.dto.ScrapDTO;
+import com.szs.web.errors.ScrapNotFoundException;
 import com.szs.web.errors.UserInfoNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 
@@ -50,7 +49,11 @@ public class RefundResource {
 
         result.put("이름", username);
 
-        ScrapDTO scrap = scrapService.getScrapInfo().orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        ScrapDTO scrap = scrapService.getScrapInfo().orElseThrow(() -> new ScrapNotFoundException());
+
+        if (scrap.getScrapSalaryList().isEmpty() || scrap.getScrapTaxList().isEmpty()) {
+            throw new ScrapNotFoundException();
+        }
 
         int limitedMoney = refundService.getLimitedMoney(scrap.getScrapSalaryList().stream().map(ScrapSalary::getTotal).reduce(0, Integer::sum));
         int deductedMoney = refundService.getDeductedMoney(scrap.getScrapTaxList().stream().map(ScrapTax::getTotal).reduce(0, Integer::sum));

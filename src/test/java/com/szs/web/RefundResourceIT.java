@@ -63,6 +63,22 @@ class RefundResourceIT {
     @Test
     @Transactional
     @WithMockUser("test")
+    public void testScrapNotFoundExceptionWhenScrapEmpty() throws Exception {
+        //given
+        user.setUserId("test");
+        userRepository.saveAndFlush(user);
+        Scrap scrap = new Scrap().userId(user.getUserId());
+        scrapRepository.saveAndFlush(scrap);
+
+        //when, then
+        restRefundMock.perform(get("/szs/refund"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser("test")
     public void testRefundLowerBoundary() throws Exception {
         //given
         user.setUserId("test");
