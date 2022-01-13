@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
@@ -63,25 +64,29 @@ class RefundResourceIT {
     @Test
     @Transactional
     @WithMockUser("test")
-    public void testTotalSalarySmallerThanLower() throws Exception {
+    public void testRefundLowerBoundary() throws Exception {
         //given
         user.setUserId("test");
         userRepository.saveAndFlush(user);
         Scrap scrap = new Scrap().userId(user.getUserId());
         scrapRepository.saveAndFlush(scrap);
 
-        int totalSalary = Constants.SALARY_LOWER_LIMIT - 1;
+        int totalSalary = Constants.SALARY_LOWER_BOUNDARY - 1;
         ScrapSalary scrapSalary = new ScrapSalary().scrap(scrap).total(totalSalary);
         scrapSalaryRepository.saveAndFlush(scrapSalary);
 
-        ScrapTax scrapTax = new ScrapTax().scrap(scrap).total(2000000);
+        int totalTax = Constants.TAX_BOUNDARY - 1;
+        ScrapTax scrapTax = new ScrapTax().scrap(scrap).total(totalTax);
         scrapTaxRepository.saveAndFlush(scrapTax);
 
         //when, then
         restRefundMock.perform(get("/szs/refund"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.한도").value("74만원"))
+                .andExpect(jsonPath("$.공제액").value("71만 4천원"))
+                .andExpect(jsonPath("$.환급액").value("71만 4천원"))
         ;
 
     }
