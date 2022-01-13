@@ -16,30 +16,20 @@ public class RefundServiceUnitTest {
     }
 
     @Test
-    void testGetLimitedMoneyLower() {
+    void testSalaryLowerBoundary() {
         assertThat(refundService.getLimitedMoney(Constants.SALARY_LOWER_BOUNDARY)).isEqualTo(740000);
-        assertThat(refundService.getLimitedMoney(Constants.SALARY_LOWER_BOUNDARY - 1)).isEqualTo(740000);
-        assertThat(refundService.getLimitedMoney(Constants.SALARY_LOWER_BOUNDARY + 1)).isNotEqualTo(740000);
+        assertThat(refundService.getLimitedMoney(Constants.SALARY_LOWER_BOUNDARY - 100000)).isEqualTo(740000);
     }
 
     @Test
-    void testGetLimitedMoneyMiddle() {
-        int totalSalary1 = Constants.SALARY_LOWER_BOUNDARY + 1;
-        int result = (int) (740000 - (totalSalary1 - 33000000) * 0.008);
-        result = Math.max(result, 660000);
-        assertThat(refundService.getLimitedMoney(totalSalary1)).isEqualTo(result);
-
-        int totalSalary2 = Constants.SALARY_UPPER_BOUNDARY;
-        int result2 = (int) (740000 - (totalSalary2 - 33000000) * 0.008);
-        result2 = Math.max(result2, 660000);
-        assertThat(refundService.getLimitedMoney(totalSalary2)).isEqualTo(result2);
+    void testSalaryMiddleBoundary() {
+        assertThat(refundService.getLimitedMoney(Constants.SALARY_LOWER_BOUNDARY + 100000)).isEqualTo(739200);
+        assertThat(refundService.getLimitedMoney(Constants.SALARY_UPPER_BOUNDARY)).isEqualTo(660000);
     }
 
     @Test
-    void testGetLimitedMoneyUpper() {
-        int totalSalary1 = Constants.SALARY_UPPER_BOUNDARY + 1;
-        int result = (int) (660000 - (totalSalary1 - 70000000) * 0.5);
-        assertThat(refundService.getLimitedMoney(totalSalary1)).isEqualTo(result);
+    void testSalaryUpperBoundary() {
+        assertThat(refundService.getLimitedMoney(Constants.SALARY_UPPER_BOUNDARY + 100000)).isEqualTo(610000);
     }
 
     @Test
