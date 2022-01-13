@@ -46,7 +46,7 @@
 
 
 # 검증 결과
-## 1.Test Report
+## 1. Test Report
 총 42개의 단위 테스트를 통과했고 실행시간은 5.192초가 걸렸스닙다. 외부 연동이 필요한 테스트들은 대역을 사용해 의존성을 없앴습니다.
 ![Screen Shot 2022-01-13 at 7 46 16 PM](https://user-images.githubusercontent.com/39648594/149315952-4afc660c-5db2-4da4-81d4-2bbcf5381b08.png)
 
