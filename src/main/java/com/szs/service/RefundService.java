@@ -3,7 +3,7 @@ package com.szs.service;
 import com.szs.config.Constants;
 
 public class RefundService {
-    public static Integer getLimitedMoney(Integer totalSalary) {
+    public Integer getLimitedMoney(Integer totalSalary) {
         if (totalSalary <= Constants.REFUND_LOWER_LIMIT) {
             return 740000;
         } else if (totalSalary <= Constants.REFUND_UPPER_LIMIT) {
@@ -15,7 +15,7 @@ public class RefundService {
         }
     }
 
-    public static Integer getDeductedMoney(Integer calculateTax) {
+    public Integer getDeductedMoney(Integer calculateTax) {
         Integer standardMoney = 1300000;
         if (calculateTax <= standardMoney) {
             return (int) (calculateTax * 0.55);
@@ -24,7 +24,7 @@ public class RefundService {
         }
     }
 
-    public static String getFormattedMoney(Integer money) {
+    public String getFormattedMoney(Integer money) {
         if (money < 1000) {
             return "0원";
         }
