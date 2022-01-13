@@ -4,13 +4,13 @@ import com.szs.config.Constants;
 
 public class RefundService {
     public Integer getLimitedMoney(Integer totalSalary) {
-        if (totalSalary <= Constants.SALARY_LOWER_LIMIT) {
+        if (totalSalary <= Constants.SALARY_LOWER_BOUNDARY) {
             return 740000;
-        } else if (totalSalary <= Constants.SALARY_UPPER_LIMIT) {
-            Integer temp = (int) (740000 - (totalSalary - Constants.SALARY_LOWER_LIMIT) * 0.008);
+        } else if (totalSalary <= Constants.SALARY_UPPER_BOUNDARY) {
+            Integer temp = (int) (740000 - (totalSalary - Constants.SALARY_LOWER_BOUNDARY) * 0.008);
             return Math.max(660000, temp);
         } else {
-            Integer temp = (int) (660000 - (totalSalary - Constants.SALARY_UPPER_LIMIT) * 0.5);
+            Integer temp = (int) (660000 - (totalSalary - Constants.SALARY_UPPER_BOUNDARY) * 0.5);
             return Math.max(500000, temp);
         }
     }

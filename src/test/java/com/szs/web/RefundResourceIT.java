@@ -1,10 +1,15 @@
 package com.szs.web;
 
 import com.szs.IntegrationTest;
+import com.szs.config.Constants;
+import com.szs.domain.Scrap;
+import com.szs.domain.ScrapSalary;
+import com.szs.domain.ScrapTax;
 import com.szs.domain.User;
+import com.szs.repository.ScrapRepository;
+import com.szs.repository.ScrapSalaryRepository;
+import com.szs.repository.ScrapTaxRepository;
 import com.szs.repository.UserRepository;
-import com.szs.service.RefundService;
-import com.szs.service.ScrapService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +19,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -25,22 +29,22 @@ class RefundResourceIT {
     @Autowired
     private UserRepository userRepository;
 
-    private ScrapService scrapService;
+    @Autowired
+    private ScrapRepository scrapRepository;
 
-    private RefundService refundService;
+    @Autowired
+    private ScrapSalaryRepository scrapSalaryRepository;
+
+    @Autowired
+    private ScrapTaxRepository scrapTaxRepository;
 
     @Autowired
     private MockMvc restRefundMock;
 
     private User user;
 
-    private String userId;
-
     @BeforeEach
     void initTest() throws Exception {
-        scrapService = mock(ScrapService.class);
-        refundService = mock(RefundService.class);
-
         user = UserResourceIT.createEntity();
         user.setRegNo(AES256Utils.encrypt(user.getRegNo()));
         user.setPassword("test");
@@ -53,6 +57,32 @@ class RefundResourceIT {
         restRefundMock.perform(get("/szs/refund"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.title").value("Not Authorized")) ;
+                .andExpect(jsonPath("$.title").value("Not Authorized"));
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser("test")
+    public void testTotalSalarySmallerThanLower() throws Exception {
+        //given
+        user.setUserId("test");
+        userRepository.saveAndFlush(user);
+        Scrap scrap = new Scrap().userId(user.getUserId());
+        scrapRepository.saveAndFlush(scrap);
+
+        int totalSalary = Constants.SALARY_LOWER_LIMIT - 1;
+        ScrapSalary scrapSalary = new ScrapSalary().scrap(scrap).total(totalSalary);
+        scrapSalaryRepository.saveAndFlush(scrapSalary);
+
+        ScrapTax scrapTax = new ScrapTax().scrap(scrap).total(2000000);
+        scrapTaxRepository.saveAndFlush(scrapTax);
+
+        //when, then
+        restRefundMock.perform(get("/szs/refund"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.한도").value("74만원"))
+        ;
+
     }
 }
