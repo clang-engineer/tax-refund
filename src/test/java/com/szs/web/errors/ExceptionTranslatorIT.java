@@ -88,6 +88,17 @@ class ExceptionTranslatorIT {
     }
 
     @Test
+    void testLoginAlreadyUsedError() throws Exception {
+        mockMvc
+                .perform(get("/api/exception-translator-test/login-already-used"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.title").value("Login Already Used"))
+                .andExpect(jsonPath("$.description").value("user id duplicate"))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()));
+    }
+
+    @Test
     void testInternalServerError() throws Exception {
         mockMvc
                 .perform(get("/api/exception-translator-test/internal-server-error"))
@@ -97,6 +108,5 @@ class ExceptionTranslatorIT {
                 .andExpect(jsonPath("$.description").value(""))
                 .andExpect(jsonPath("$.status").value(HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
-
 
 }

@@ -53,6 +53,11 @@ public class ExceptionTranslatorTestController {
         throw new ScrapSaveFailException();
     }
 
+    @GetMapping("/login-already-used")
+    public void loginAlreadyUsed() {
+        throw new LoginAlreadyUsedException();
+    }
+
     @GetMapping("/internal-server-error")
     public void internalServerError() {
         throw new RuntimeException();
