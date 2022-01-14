@@ -48,6 +48,9 @@ public class ScrapServiceIT {
     public static final String DEFAULT_SCRAP_SALARY_TITLE = "AAAAAAAA";
     public static final Integer DEFAULT_SCRAP_SALARY_TOTAL = 3234000;
 
+    public static final String DEFAULT_SCRAP_TAX_TITLE = "BBBBBBBB";
+    public static final Integer DEFAULT_SCRAP_TAX_TOTAL = 1236000;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -74,11 +77,7 @@ public class ScrapServiceIT {
 
     private ScrapTax scrapTax;
 
-    private JSONObject jsonObject;
-
-    RestTemplate restTemplate;
-    private ArgumentCaptor<String> postUrlCapture;
-    private ArgumentCaptor<Map> postParamCapture;
+    private RestTemplate restTemplate;
 
     public static Scrap createEntity() {
         Scrap scrap = new Scrap()
@@ -102,13 +101,13 @@ public class ScrapServiceIT {
 
     public ScrapTax createScrapTax() {
         ScrapTax scrapTax = new ScrapTax()
-                .title(DEFAULT_SCRAP_SALARY_TITLE)
-                .total(DEFAULT_SCRAP_SALARY_TOTAL);
+                .title(DEFAULT_SCRAP_TAX_TITLE)
+                .total(DEFAULT_SCRAP_TAX_TOTAL);
         return scrapTax;
     }
 
     @BeforeEach
-    public void initTest() throws Exception{
+    public void initTest() throws Exception {
         user = UserResourceIT.createEntity().useId(DEFAULT_USER_ID);
         user.setPassword(passwordEncoder.encode("1234"));
         user.setRegNo(AES256Utils.encrypt(user.getRegNo()));
@@ -118,22 +117,22 @@ public class ScrapServiceIT {
         scrapTax = createScrapTax();
 
         restTemplate = mock(RestTemplate.class);
-        postUrlCapture = ArgumentCaptor.forClass(String.class);
-        postParamCapture = ArgumentCaptor.forClass(Map.class);
     }
 
     @Test
     @Transactional
     @WithMockUser(DEFAULT_USER_ID)
-    void getScrapInfoInLocalNetwork() throws Exception {
-
+    void testGetScrapInfo() {
+        //given
         userRepository.saveAndFlush(user);
         scrapRepository.saveAndFlush(scrap);
         scrapSalaryRepository.saveAndFlush(scrapSalary.scrap(scrap));
         scrapTaxRepository.saveAndFlush(scrapTax.scrap(scrap));
 
+        //when
         Optional<ScrapDTO> scrapDTO = scrapService.getScrapInfo();
 
+        //then
         assertThat(scrapDTO).isPresent();
         assertThat(scrapDTO.orElse(null).getAppVer()).isEqualTo(DEFAULT_APP_VER);
         assertThat(scrapDTO.orElse(null).getScrapSalaryList().get(0)).isEqualTo(scrapSalary);
@@ -142,16 +141,18 @@ public class ScrapServiceIT {
 
     @Test
     @Transactional
-    void getScrapInfoUnAuthorizedException() throws Exception {
+    void testUserInfoNotFoundException() {
         assertThrows(UserInfoNotFoundException.class, () -> scrapService.getScrapInfo());
     }
 
     @Test
     @Transactional
-    void testSaveScarpInfoScrapSaveFailException() throws Exception {
+    void testScrapSaveFailException() {
+        //given
         when(restTemplate.postForObject(anyString(), anyString(), eq(Map.class))).thenReturn(null);
         scrapService.setRestTemplate(restTemplate);
 
+        //when,then
         assertThrows(ScrapSaveFailException.class, () -> {
             scrapService.saveScrapInfo(user);
         });
@@ -160,12 +161,13 @@ public class ScrapServiceIT {
     @Test
     @Transactional
     void testSaveScrapInfo() throws Exception {
+        //given
         userRepository.saveAndFlush(user);
-
         JSONObject jsonObject = TestUtil.createScrapJSONObject();
         jsonObject.getJSONObject("jsonList").put("userId", DEFAULT_USER_ID);
 
-        //given
+        ArgumentCaptor<String> postUrlCapture = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Map> postParamCapture = ArgumentCaptor.forClass(Map.class);
         when(restTemplate.postForObject(postUrlCapture.capture(), postParamCapture.capture(), eq(Map.class))).thenReturn(TestUtil.getMapFromJsonObject(jsonObject));
         scrapService.setRestTemplate(restTemplate);
 
@@ -184,15 +186,16 @@ public class ScrapServiceIT {
 
     @Test
     @Transactional
-    @WithMockUser(DEFAULT_USER_ID)
-    void assertThatScrappingScheduledIn24Hours() throws Exception {
+    void testScrappingScheduledIn24Hours() {
+        //given
         userRepository = mock(UserRepository.class);
         scrapRepository = mock(ScrapRepository.class);
-
         scrapService = new ScrapService(userRepository, scrapRepository, scrapSalaryRepository, scrapTaxRepository);
 
+        //when
         scrapService.executeScrapping();
 
+        //then
         verify(scrapRepository, times(1)).findAll();
         verify(userRepository, times(1)).findAll();
     }
