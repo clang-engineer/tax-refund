@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 public class ManagedUserVM {
     @NotNull
     @Pattern(regexp = Constants.LOGIN_REGEX)
+    @Size(min = 1, max = 50)
     private String userId;
 
     @NotNull
@@ -16,8 +17,10 @@ public class ManagedUserVM {
     private String password;
 
     @NotNull
+    @Size(max = 50)
     private String name;
 
+    @Size(max = 50)
     @Pattern(regexp = Constants.REG_NO_REGEX)
     private String regNo;
 
