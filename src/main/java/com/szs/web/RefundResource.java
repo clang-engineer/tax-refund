@@ -39,7 +39,8 @@ public class RefundResource {
     }
 
     @GetMapping("/refund")
-    public ResponseEntity<HashMap<String, String>> getRefund() throws Exception {
+    public ResponseEntity<HashMap<String, String>> getRefund() {
+        log.debug("REST request to get scrap");
 
         HashMap<String, String> result = new HashMap<>();
 
