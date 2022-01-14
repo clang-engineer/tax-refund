@@ -53,7 +53,7 @@
 ![Screen Shot 2022-01-14 at 10 32 03 AM](https://user-images.githubusercontent.com/39648594/149435986-7fe4dd79-4306-487a-8d37-33349a8850ae.png)
 
 ## 2. Code Coverage
-domain, dto, static util을 제외한 전체 코드의 95%를 커버하는 단위테스트를 작성하였습니다.
+domain, dto, static util을 제외한 전체 코드의 95%를 커버하는 통합,단위테스트를 작성하였습니다.
 ![Screen Shot 2022-01-14 at 10 32 34 AM](https://user-images.githubusercontent.com/39648594/149436070-1a1490fa-7e70-4824-b316-363255382fd1.png)
 
 # 주관식 과제
