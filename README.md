@@ -4,17 +4,17 @@
 ## 개요
 - 과제 필수 요구사항인 java, spring-boot, jpa, h2, gradle을 구현에 사용하였습니다.
 - 인증부는 spring security + jwt를 db 스키마 관리는 liquibase를 추가로 사용하였습니다.
-- h2는 http://localhost:8080/h2-console 에서 id: young-jun / password:공란 으로 확인가능합니다.
+- h2는 http://localhost:8080/h2-console 에서 id: young-jun / password:공란으로 확인 가능합니다.
 - swagger-ui는 http://localhost:8080/swagger-ui/ 에서 확인 가능합니다.
 
-## 1-1. 회윈가입 API
+## 1-1. 회원가입 API
 - path: /szs/signup
 - param: userId(String), password(String), name(String), regNo(String)
 - 패스워드는 BCryptPasswordEncoder를 사용하여 단방향 암호화 처리하였습니다.
 - 주민등록번호는 AES256알고리즘을 사용하여 양방향 암호화 처리하였습니다.
-- 주민등록번호는 정규성검증하여 정해진 패턴만 입력가능하도록 처리하였습니다.
+- 주민등록번호는 정규성 검증하여 정해진 패턴만 입력할 수 있도록 처리하였습니다.
 - 회원가입에 필요한 4가지 파라미터는 모두 필수 입력값으로 제약을 추가했습니다.
-- 패스워드는 4자리 이상 60자리 이하로만 입력되록만 제약을 추가했습니다. (ex> 1234(o), abcd(o), 123(x))
+- 패스워드는 4자리 이상 60자리 이하로만 입력되도록 제약을 추가했습니다. (ex> 1234(o), abcd(o), 123(x))
 - ID, 패스워드, 이름은 50자 이하로만 입력할 수 있도록 제약을 추가했습니다.
 - userId와 regNo는 중복으로 등록할 수 없도록 제약을 추가했습니다. 
 
@@ -22,7 +22,7 @@
 - path: /szs/login
 - param: userId(String), password(String)
 - 인증에는 스프링 시큐리티를 사용하였고 jwt filter를 추가하였습니다.
-- 로그인 성공시 jwt token을 발급하고 해당 토큰의 유효성을 signup, login을 제외한 모든 api경로에서 확인하도록 구성하였습니다.
+- 로그인 성공 시 jwt token을 발급하고 해당 토큰의 유효성을 signup, login을 제외한 모든 api경로에서 확인하도록 구성하였습니다.
 
 ## 1-3. 내 정보보기 API
 - path: /szs/me
