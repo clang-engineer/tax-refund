@@ -47,12 +47,12 @@
 
 # 검증 결과
 ## 1. Test Report
-총 42개의 단위 테스트를 통과했고 실행시간은 5.192초가 걸렸스닙다. 외부 연동이 필요한 테스트들은 대역을 사용해 의존성을 없앴습니다.
-![Screen Shot 2022-01-13 at 7 46 16 PM](https://user-images.githubusercontent.com/39648594/149315952-4afc660c-5db2-4da4-81d4-2bbcf5381b08.png)
+총 45개의 단위 테스트를 통과했고 실행시간은 5.192초가 걸렸습니다. 외부 연동이 필요한 테스트들은 대역을 사용해 의존성을 없앴습니다.
+![Screen Shot 2022-01-14 at 10 32 03 AM](https://user-images.githubusercontent.com/39648594/149435986-7fe4dd79-4306-487a-8d37-33349a8850ae.png)
 
 ## 2. Code Coverage
-domain, dto, static util을 제외한 전체 코드의 93%를 커버하는 단위테스트를 작성하였습니다.
-![Screen Shot 2022-01-13 at 7 43 14 PM](https://user-images.githubusercontent.com/39648594/149315578-6648c8de-7f0c-43fc-8a48-4e343c5b142b.png)
+domain, dto, static util을 제외한 전체 코드의 95%를 커버하는 단위테스트를 작성하였습니다.
+![Screen Shot 2022-01-14 at 10 32 34 AM](https://user-images.githubusercontent.com/39648594/149436070-1a1490fa-7e70-4824-b316-363255382fd1.png)
 
 # 주관식 과제
 
