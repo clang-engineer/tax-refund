@@ -2,6 +2,7 @@
 
 # API 정리
 ## 개요
+- 프로젝트 루트 폴더에서 mac: ./gradlew bootRun 또는 window: gradlew bootRun 을 통해 어플리케이션을 실행할 수 있습니다. 
 - 과제 필수 요구사항인 java, spring-boot, jpa, h2, gradle을 구현에 사용하였습니다.
 - 인증부는 spring security + jwt를 db 스키마 관리는 liquibase를 추가로 사용하였습니다.
 - h2는 http://localhost:8080/h2-console 에서 id: young-jun / password:공란으로 확인 가능합니다.
