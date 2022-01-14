@@ -68,8 +68,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
         }
     }
+
     private JWTConfigurer securityConfigurerAdapter() {
         return new JWTConfigurer(tokenProvider);
     }
-
 }

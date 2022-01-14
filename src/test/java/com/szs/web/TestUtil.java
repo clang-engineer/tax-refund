@@ -78,7 +78,7 @@ public class TestUtil {
         scrap002Object.put("총사용금액", "200000");
         scrap002Object.put("소득구분", "산출세액");
         scrap002List.put(scrap002Object);
-        jsonListObject.put("scrap002", scrap001List);
+        jsonListObject.put("scrap002", scrap002List);
 
         result.put("jsonList", jsonListObject);
 
