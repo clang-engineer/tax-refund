@@ -3,6 +3,7 @@ package com.szs.web;
 import com.szs.IntegrationTest;
 import com.szs.domain.User;
 import com.szs.repository.UserRepository;
+import com.szs.web.vm.ManagedUserVM;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,5 +92,25 @@ public class UserResourceIT {
                 .andExpect(jsonPath("$.regNo").value(DEFAULT_REG_NO));
     }
 
+    @Test
+    @Transactional
+    void testLoginAlreadyUsedException() throws Exception {
+        //given
+        ManagedUserVM login = new ManagedUserVM();
+        login.setName("test");
+        login.setUserId("userid");
+        login.setPassword("password");
+        userRepository.saveAndFlush(new User(login));
+
+        //when, then
+        restUserMockMvc
+                .perform(post("/szs/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtil.convertObjectToJsonBytes(login)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title").value("Login Already Used"))
+        ;
+
+    }
 
 }
