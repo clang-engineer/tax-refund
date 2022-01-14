@@ -52,7 +52,7 @@ public class ExceptionTranslator {
 
     @ExceptionHandler
     public ResponseEntity<ErrorDTO> handleScrapSaveFailException(LoginAlreadyUsedException ex) {
-        ErrorDTO errorDTO = new ErrorDTO("Login Already Used", "user id duplicate", HttpStatus.BAD_REQUEST);
+        ErrorDTO errorDTO = new ErrorDTO("Login Already Used", "login already used", HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(errorDTO, HttpStatus.BAD_REQUEST);
     }
 

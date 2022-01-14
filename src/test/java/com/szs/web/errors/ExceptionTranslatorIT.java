@@ -94,7 +94,7 @@ class ExceptionTranslatorIT {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value("Login Already Used"))
-                .andExpect(jsonPath("$.description").value("user id duplicate"))
+                .andExpect(jsonPath("$.description").value("login already used"))
                 .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()));
     }
 
