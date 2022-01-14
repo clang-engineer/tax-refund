@@ -42,7 +42,8 @@ public class UserResource {
     public ResponseEntity<User> createUser(@Valid @RequestBody ManagedUserVM managedUserVM) throws Exception {
         log.debug("REST request to save User: {}", managedUserVM);
 
-        if (userRepository.findOneByUserId(managedUserVM.getUserId()).isPresent()) {
+        if (userRepository.findOneByUserId(managedUserVM.getUserId()).isPresent()
+                || userRepository.findOneByRegNo(AES256Utils.encrypt(managedUserVM.getRegNo())).isPresent()) {
             throw new LoginAlreadyUsedException();
         }
 
