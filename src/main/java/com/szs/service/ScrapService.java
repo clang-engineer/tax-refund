@@ -79,6 +79,11 @@ public class ScrapService {
 
     public Optional<ScrapDTO> saveScrapInfo(User user) {
         log.debug("Save current user scrap info from external network");
+
+        if (scrapRepository.findOneByUserIdIgnoreCase(user.getUserId()).isPresent()) {
+            throw new ScrapSaveFailException();
+        }
+
         try {
             Map map = Map.of("name", user.getName(), "regNo", AES256Utils.decrypt(user.getRegNo()));
 

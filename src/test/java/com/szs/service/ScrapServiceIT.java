@@ -190,6 +190,19 @@ public class ScrapServiceIT {
 
     @Test
     @Transactional
+    void testDuplicateScrapSaveFailureException() {
+        //given
+        user.setUserId("test");
+        userRepository.save(user);
+        scrap.setUserId("test");
+        scrapRepository.save(scrap);
+
+        //when, then
+        assertThrows(ScrapSaveFailException.class, () -> scrapService.saveScrapInfo(user));
+    }
+
+    @Test
+    @Transactional
     void testSaveScrappedSalaryException() throws Exception {
         //given
         userRepository.saveAndFlush(user);
