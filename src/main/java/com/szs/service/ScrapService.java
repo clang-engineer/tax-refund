@@ -146,7 +146,7 @@ public class ScrapService {
                     .scrap(scrap);
             return scrapSalaryRepository.save(scrappedSalary);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ScrapSaveFailException();
         }
     }
 

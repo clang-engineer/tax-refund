@@ -14,6 +14,7 @@ import com.szs.web.AES256Utils;
 import com.szs.web.TestUtil;
 import com.szs.web.UserResourceIT;
 import com.szs.web.errors.UserInfoNotFoundException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -182,6 +183,28 @@ public class ScrapServiceIT {
         scrapService.setRestTemplate(restTemplate);
 
         //when,then
+        assertThrows(ScrapSaveFailException.class, () -> {
+            scrapService.saveScrapInfo(user);
+        });
+    }
+
+    @Test
+    @Transactional
+    void testSaveScrappedSalaryException() throws Exception {
+        //given
+        userRepository.saveAndFlush(user);
+        JSONObject jsonObject = TestUtil.createScrapJSONObject();
+        JSONObject jsonListObject = jsonObject.getJSONObject("jsonList");
+        JSONArray scrap001List = new JSONArray();
+        JSONObject scrap001Object = new JSONObject();
+        scrap001List.put(scrap001Object);
+        jsonListObject.put("scrap001", scrap001List);
+        jsonObject.put("jsonList", jsonListObject);
+
+        when(restTemplate.postForObject(anyString(), any(), any())).thenReturn(TestUtil.getMapFromJsonObject(jsonObject));
+        scrapService.setRestTemplate(restTemplate);
+
+        //when, then
         assertThrows(ScrapSaveFailException.class, () -> {
             scrapService.saveScrapInfo(user);
         });
