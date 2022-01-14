@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import javax.servlet.http.Cookie;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,9 +42,9 @@ class JWTFilterTest {
     @Test
     void testJWTFilter() throws Exception {
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-            "test-user",
-            "test-password",
-            Collections.singletonList(new SimpleGrantedAuthority(AuthoritiesConstants.USER))
+                "test-user",
+                "test-password",
+                Collections.singletonList(new SimpleGrantedAuthority(AuthoritiesConstants.USER))
         );
         String jwt = tokenProvider.createToken(authentication);
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -96,9 +97,9 @@ class JWTFilterTest {
     @Test
     void testJWTFilterWrongScheme() throws Exception {
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-            "test-user",
-            "test-password",
-            Collections.singletonList(new SimpleGrantedAuthority(AuthoritiesConstants.USER))
+                "test-user",
+                "test-password",
+                Collections.singletonList(new SimpleGrantedAuthority(AuthoritiesConstants.USER))
         );
         String jwt = tokenProvider.createToken(authentication);
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -110,4 +111,43 @@ class JWTFilterTest {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
     }
+
+    @Test
+    void testJWTFilterWithRequestParam() throws Exception {
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                "test-user",
+                "test-password",
+                Collections.singletonList(new SimpleGrantedAuthority(AuthoritiesConstants.USER))
+        );
+        String jwt = tokenProvider.createToken(authentication);
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setParameter(JWTFilter.AUTHORIZATION_TOKEN, jwt);
+        request.setRequestURI("/api/test");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        MockFilterChain filterChain = new MockFilterChain();
+        jwtFilter.doFilter(request, response, filterChain);
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(SecurityContextHolder.getContext().getAuthentication().getName()).isEqualTo("test-user");
+        assertThat(SecurityContextHolder.getContext().getAuthentication().getCredentials()).hasToString(jwt);
+    }
+
+    @Test
+    void testJWTFilterWithCookie() throws Exception {
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                "test-user",
+                "test-password",
+                Collections.singletonList(new SimpleGrantedAuthority(AuthoritiesConstants.USER))
+        );
+        String jwt = tokenProvider.createToken(authentication);
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setCookies(new Cookie(JWTFilter.AUTHORIZATION_TOKEN, jwt));
+        request.setRequestURI("/api/test");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        MockFilterChain filterChain = new MockFilterChain();
+        jwtFilter.doFilter(request, response, filterChain);
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(SecurityContextHolder.getContext().getAuthentication().getName()).isEqualTo("test-user");
+        assertThat(SecurityContextHolder.getContext().getAuthentication().getCredentials()).hasToString(jwt);
+    }
+
 }
