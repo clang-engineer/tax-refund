@@ -69,7 +69,7 @@ public class UserResourceIT {
         assertThat(userList).hasSize(databaseSizeBeforeCreate + 1);
 
         User testUser = userList.get(userList.size() - 1);
-        assertThat(testUser.getUserId()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(testUser.getUserId()).isEqualTo(DEFAULT_USER_ID.toLowerCase());
         assertThat(testUser.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testUser.getRegNo()).isEqualTo(AES256Utils.encrypt(DEFAULT_REG_NO));
     }

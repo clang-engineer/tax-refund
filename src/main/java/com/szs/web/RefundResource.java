@@ -45,7 +45,7 @@ public class RefundResource {
         HashMap<String, String> result = new HashMap<>();
 
         String username = SecurityUtils.getCurrentUserLogin()
-                .flatMap(userRepository::findOneByUserId).map(User::getName)
+                .flatMap(userRepository::findOneByUserIdIgnoreCase).map(User::getName)
                 .orElseThrow(() -> new UserInfoNotFoundException());
 
         result.put("이름", username);

@@ -59,9 +59,9 @@ public class ScrapService {
     public Optional<ScrapDTO> getScrapInfo() {
         log.debug("Get current user scrap info");
 
-        User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).orElseThrow(() -> new UserInfoNotFoundException());
+        User user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserIdIgnoreCase).orElseThrow(() -> new UserInfoNotFoundException());
 
-        Optional<ScrapDTO> scrapDTO = scrapRepository.findOneByUserId(user.getUserId()).map(ScrapDTO::new);
+        Optional<ScrapDTO> scrapDTO = scrapRepository.findOneByUserIdIgnoreCase(user.getUserId()).map(ScrapDTO::new);
 
         if (scrapDTO.isPresent()) {
             return scrapDTO.map(data -> {

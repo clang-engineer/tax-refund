@@ -35,7 +35,7 @@ public class DomainUserDetailsService implements UserDetailsService {
 
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
         return userRepository
-            .findOneByUserId(lowercaseLogin)
+            .findOneByUserIdIgnoreCase(lowercaseLogin)
             .map(user -> createSpringSecurityUser(user))
             .orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database"));
     }

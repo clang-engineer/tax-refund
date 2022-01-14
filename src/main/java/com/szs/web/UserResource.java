@@ -42,13 +42,14 @@ public class UserResource {
     public ResponseEntity<User> createUser(@Valid @RequestBody ManagedUserVM managedUserVM) throws Exception {
         log.debug("REST request to save User: {}", managedUserVM);
 
-        if (userRepository.findOneByUserId(managedUserVM.getUserId()).isPresent()
+        if (userRepository.findOneByUserIdIgnoreCase(managedUserVM.getUserId()).isPresent()
                 || userRepository.findOneByRegNo(AES256Utils.encrypt(managedUserVM.getRegNo())).isPresent()) {
             throw new LoginAlreadyUsedException();
         }
 
         User user = new User(managedUserVM);
 
+        user.setUserId(user.getUserId().toLowerCase());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRegNo(AES256Utils.encrypt(user.getRegNo()));
         User result = userRepository.save(user);
@@ -66,7 +67,7 @@ public class UserResource {
     public ResponseEntity<UserDTO> getUser() throws Exception {
         log.debug("REST request to get User");
 
-        UserDTO userDTO = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserId).map(UserDTO::new).orElseThrow(() -> new UserInfoNotFoundException());
+        UserDTO userDTO = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByUserIdIgnoreCase).map(UserDTO::new).orElseThrow(() -> new UserInfoNotFoundException());
         userDTO.setRegNo(AES256Utils.decrypt(userDTO.getRegNo()));
 
         return ResponseEntity.ok(userDTO);

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ScrapRepository extends JpaRepository<Scrap, Long> {
-    Optional<Scrap> findOneByUserId(String userId);
+    Optional<Scrap> findOneByUserIdIgnoreCase(String userId);
 }
