@@ -1,8 +1,8 @@
 package com.szs.web;
 
+import com.szs.service.ScrapNotFoundException;
 import com.szs.service.ScrapService;
 import com.szs.service.dto.ScrapDTO;
-import com.szs.web.errors.ScrapNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

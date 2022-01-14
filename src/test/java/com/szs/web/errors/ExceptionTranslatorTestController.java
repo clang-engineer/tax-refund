@@ -1,5 +1,6 @@
 package com.szs.web.errors;
 
+import com.szs.service.ScrapNotFoundException;
 import com.szs.service.ScrapSaveFailException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
