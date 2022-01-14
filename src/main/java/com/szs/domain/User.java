@@ -109,7 +109,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public User(UserDTO userDTO) {
         this.userId = userDTO.getUserId();
-        this.password = userDTO.getPassword();
         this.name = userDTO.getName();
         this.regNo = userDTO.getRegNo();
     }
