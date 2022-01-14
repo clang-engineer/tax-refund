@@ -23,7 +23,7 @@ public class ScrapResource {
 
 
     @GetMapping("/scrap")
-    public ResponseEntity<ScrapDTO> getScrap() throws Exception {
+    public ResponseEntity<ScrapDTO> getScrap() {
         log.debug("REST request to get scrap");
         ScrapDTO scrapDTO = scrapService.getScrapInfo().orElseThrow(() -> new ScrapNotFoundException());
 
