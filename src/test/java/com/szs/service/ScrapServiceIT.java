@@ -13,6 +13,7 @@ import com.szs.service.dto.ScrapDTO;
 import com.szs.web.AES256Utils;
 import com.szs.web.TestUtil;
 import com.szs.web.UserResourceIT;
+import com.szs.web.errors.ScrapNotFoundException;
 import com.szs.web.errors.UserInfoNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -183,7 +184,7 @@ public class ScrapServiceIT {
         scrapService.setRestTemplate(restTemplate);
 
         //when,then
-        assertThrows(ScrapSaveFailException.class, () -> {
+        assertThrows(ScrapNotFoundException.class, () -> {
             scrapService.saveScrapInfo(user);
         });
     }
