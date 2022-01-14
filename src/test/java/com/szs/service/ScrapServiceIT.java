@@ -122,7 +122,7 @@ public class ScrapServiceIT {
     @Test
     @Transactional
     @WithMockUser(DEFAULT_USER_ID)
-    void testGetScrapInfo() {
+    void testGetScrapInfoFromLocalDB() {
         //given
         userRepository.saveAndFlush(user);
         scrapRepository.saveAndFlush(scrap);
@@ -137,6 +137,35 @@ public class ScrapServiceIT {
         assertThat(scrapDTO.orElse(null).getAppVer()).isEqualTo(DEFAULT_APP_VER);
         assertThat(scrapDTO.orElse(null).getScrapSalaryList().get(0)).isEqualTo(scrapSalary);
         assertThat(scrapDTO.orElse(null).getScrapTaxList().get(0)).isEqualTo(scrapTax);
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(DEFAULT_USER_ID)
+    void testGetScrapInfoFormExternalNetwork() throws Exception {
+        //given
+        userRepository.saveAndFlush(user);
+        JSONObject jsonObject = TestUtil.createScrapJSONObject();
+        jsonObject.getJSONObject("jsonList").put("userId", DEFAULT_USER_ID);
+
+        ArgumentCaptor<String> postUrlCapture = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Map> postParamCapture = ArgumentCaptor.forClass(Map.class);
+        when(restTemplate.postForObject(postUrlCapture.capture(), postParamCapture.capture(), eq(Map.class))).thenReturn(TestUtil.getMapFromJsonObject(jsonObject));
+        scrapService.setRestTemplate(restTemplate);
+
+        //when
+        Optional<ScrapDTO> scrapDTO = scrapService.getScrapInfo();
+
+        //then
+        assertThat(scrapDTO).isNotNull();
+        assertThat(scrapDTO.orElse(null).getUserId()).isEqualTo(DEFAULT_USER_ID);
+        assertThat(scrapDTO.orElse(null).getAppVer()).isEqualTo("test-appVer");
+        assertThat(scrapDTO.orElse(null).getHostNm()).isEqualTo("test-hostNm");
+        assertThat(scrapDTO.orElse(null).getScrapSalaryList().size()).isEqualTo(1);
+        assertThat(scrapDTO.orElse(null).getScrapTaxList().size()).isEqualTo(1);
+
+        assertThat(postUrlCapture.getValue()).isEqualTo(ScrapService.SZS_URL);
+        assertThat(postParamCapture.getValue().get("name")).isEqualTo(user.getName());
     }
 
     @Test
@@ -156,32 +185,6 @@ public class ScrapServiceIT {
         assertThrows(ScrapSaveFailException.class, () -> {
             scrapService.saveScrapInfo(user);
         });
-    }
-
-    @Test
-    @Transactional
-    void testSaveScrapInfo() throws Exception {
-        //given
-        userRepository.saveAndFlush(user);
-        JSONObject jsonObject = TestUtil.createScrapJSONObject();
-        jsonObject.getJSONObject("jsonList").put("userId", DEFAULT_USER_ID);
-
-        ArgumentCaptor<String> postUrlCapture = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Map> postParamCapture = ArgumentCaptor.forClass(Map.class);
-        when(restTemplate.postForObject(postUrlCapture.capture(), postParamCapture.capture(), eq(Map.class))).thenReturn(TestUtil.getMapFromJsonObject(jsonObject));
-        scrapService.setRestTemplate(restTemplate);
-
-        //when
-        scrapService.saveScrapInfo(user);
-
-        //then
-        Scrap scrap = scrapRepository.findOneByUserId(DEFAULT_USER_ID).orElseThrow(() -> new Exception());
-        assertThat(scrap).isNotNull();
-        assertThat(scrapTaxRepository.findAllByScrapId(scrap.getId())).isNotEmpty();
-        assertThat(scrapSalaryRepository.findAllByScrapId(scrap.getId())).isNotEmpty();
-
-        assertThat(postUrlCapture.getValue()).isEqualTo(ScrapService.SZS_URL);
-        assertThat(postParamCapture.getValue().get("name")).isEqualTo(user.getName());
     }
 
     @Test
