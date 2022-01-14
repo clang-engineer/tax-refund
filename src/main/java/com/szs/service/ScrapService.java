@@ -80,10 +80,6 @@ public class ScrapService {
     public Optional<ScrapDTO> saveScrapInfo(User user) {
         log.debug("Save current user scrap info from external network");
 
-        if (scrapRepository.findOneByUserIdIgnoreCase(user.getUserId()).isPresent()) {
-            throw new ScrapSaveFailException();
-        }
-
         try {
             Map map = Map.of("name", user.getName(), "regNo", AES256Utils.decrypt(user.getRegNo()));
 
@@ -122,6 +118,10 @@ public class ScrapService {
     }
 
     private Scrap saveScrap(HashMap externalJson, String userId) {
+        if (scrapRepository.findOneByUserIdIgnoreCase(userId).isPresent()) {
+            throw new ScrapSaveFailException();
+        }
+
         HashMap jsonList = (HashMap) externalJson.get("jsonList");
 
         Scrap result = new Scrap()
